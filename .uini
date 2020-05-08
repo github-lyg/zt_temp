@@ -1,0 +1,1 @@
+open_basedir="C:\UPUPW_K2.1_64\vhosts\admin.zongtushangmao.cn\;C:\UPUPW_K2.1_64\memcached\;C:\UPUPW_K2.1_64\phpmyadmin\;C:\UPUPW_K2.1_64\temp\;C:\Windows\Temp\"
