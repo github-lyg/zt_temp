@@ -3,10 +3,15 @@ defined('IN_IA') or exit('Access Denied');
 
 $config = array();
 
+// $config['db']['master']['host'] = '127.0.0.1';
+// $config['db']['master']['username'] = 'root';
+// $config['db']['master']['password'] = 'root';
+// $config['db']['master']['port'] = '3306';
 $config['db']['master']['host'] = '127.0.0.1';
 $config['db']['master']['username'] = 'root';
-$config['db']['master']['password'] = 'root';
-$config['db']['master']['port'] = '3306';
+$config['db']['master']['password'] = '123456';
+$config['db']['master']['port'] = '8889';
+
 $config['db']['master']['database'] = 'mall';
 $config['db']['master']['charset'] = 'utf8';
 $config['db']['master']['pconnect'] = 0;
@@ -38,7 +43,7 @@ $config['setting']['memory_limit'] = '256M';
 $config['setting']['filemode'] = 0644;
 $config['setting']['authkey'] = 'daefd2a9';
 $config['setting']['founder'] = '1';
-$config['setting']['development'] = 1;
+$config['setting']['development'] = 0;
 $config['setting']['referrer'] = 0;
 
 // --------------------------  CONFIG UPLOAD  --------------------------- //
@@ -59,8 +64,8 @@ $config['setting']['memcache']['session'] = 1;
 $config['setting']['proxy']['host'] = '';
 $config['setting']['proxy']['auth'] = '';
 // redis
-$config['setting']['redis']['server'] = '127.0.0.1'; 
-$config['setting']['redis']['port'] = 6379; 
-$config['setting']['redis']['pconnect'] = 0; 
-$config['setting']['redis']['requirepass'] = ''; 
+$config['setting']['redis']['server'] = '127.0.0.1';
+$config['setting']['redis']['port'] = 6379;
+$config['setting']['redis']['pconnect'] = 0;
+$config['setting']['redis']['requirepass'] = '';
 $config['setting']['redis']['timeout'] = 1;
