@@ -1,0 +1,387 @@
+<?php defined('IN_IA') or exit('Access Denied');?><?php (!empty($this) && $this instanceof WeModuleSite || 1) ? (include $this->template('_header', TEMPLATE_INCLUDEPATH)) : (include template('_header', TEMPLATE_INCLUDEPATH));?>
+<style>
+    .select2{
+        margin:0;
+        width:100%;
+        height:34px;
+        border-radius: 3px;
+        border-color: rgb(229, 230, 231);
+    }
+    .select2 .select2-choice{
+        height: 34px;
+        line-height: 32px;
+        border-radius: 3px;
+        border-color: rgb(229, 230, 231);
+    }
+    .select2 .select2-choice .select2-arrow{
+        background: #fff;
+    }
+    .form-group .radio-inline{
+        padding-top: 0px;;
+    }
+</style>
+<div class="page-header">
+    当前位置：<span class="text-primary">通知设置</span>
+        <div class="pull-right">
+            <strong>高级模式</strong>
+            <?php if(cv('globonus.notice.edit')) { ?>
+            <input class="js-switch small advanced" type="checkbox" <?php  if(!empty($data['tm']['is_advanced'])) { ?>checked<?php  } ?>/>
+            <?php  } else { ?>
+            <?php  if(!empty($data['tm']['is_advanced'])) { ?>开启<?php  } else { ?>关闭<?php  } ?>
+            <?php  } ?>
+        </div>
+</div>
+<div class="page-content">
+    <form id="setform"  <?php if(cv('globonus.notice.edit')) { ?>action="" method="post"<?php  } ?> class="form-horizontal form-validate">
+        <input type="hidden" value="<?php  echo intval($data['tm']['is_advanced'])?>" name='data[is_advanced]' />
+        <?php if(cv('globonus.notice.edit')) { ?>
+        <div class='alert alert-warning' id="advanced_alert">
+            <h3>注意：</h3>
+            <p>请将公众平台模板消息所在行业选择为：<b> IT科技/互联网|电子商务 其他|其他</b>，所选行业不一致将会导致模板消息不可用。</p>
+            <p>点击模板消息后方的开关按钮<img src="../addons/ewei_shopv2/static/images/on-off.png"  onerror="this.src='../addons/ewei_shopv2/static/images/nopic.png'"  />即可<b>开启模板消息</b>，无需进行额外设置。</p>
+            <p>如需进行消息推送<b>个性化消息</b>，<a href="<?php  echo webUrl('sysset/tmessage')?>" title="模板消息库">点击进入自定义消息库</a><?php  if($opensms) { ?>，<a href="<?php  echo webUrl('sysset/sms')?>" title="短信消息库">点击进入短信消息库</a><?php  } ?></p>
+        </div>
+        <div class='alert alert-primary' id="normal_alert">
+            默认为全部开启，用户在会员中心可自行设置是否开启, 模板消息自动替换变量
+        </div>
+        <?php  } ?>
+        <div id="normal">
+            <div class="form-group">
+                <label class="col-lg control-label">业务处理通知</label>
+                <div class="col-sm-9 col-xs-12">
+                    <?php if(cv('globonus.notice.edit')) { ?>
+                    <input type="text" name="data[templateid]" class="form-control" value="<?php  echo $data['tm']['templateid'];?>" />
+                    <div class="help-block">公众平台模板消息编号: OPENTM207574677 </div>
+                    <?php  } else { ?>
+                    <div class='form-control-static'><?php  echo $data['tm']['templateid'];?></div>
+                    <?php  } ?>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-lg control-label">成为股东通知</label>
+                <div class="col-sm-9 col-xs-12">
+
+                    <?php if(cv('globonus.notice.edit')) { ?>
+                    <input type="text" name="data[becometitle]" class="form-control" value="<?php  echo $data['tm']['becometitle'];?>" />
+                    <div class="help-block">标题，默认"成为股东通知"</div>
+                    <?php  } else { ?>
+                    <div class='form-control-static'><?php  echo $data['tm']['becometitle'];?></div>
+                    <?php  } ?>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-lg control-label"></label>
+                <div class="col-sm-9 col-xs-12">
+                    <?php if(cv('globonus.notice.edit')) { ?>
+                    <textarea  name="data[become]" class="form-control" rows="5"><?php  echo $data['tm']['become'];?></textarea>
+                    模板变量: [昵称] [时间]
+                    <?php  } else { ?>
+                    <div class='form-control-static'><?php  echo $data['tm']['become'];?></div>
+                    <?php  } ?>
+
+                </div>
+            </div>
+
+
+
+            <div class="form-group">
+                <label class="col-lg control-label">分红发放通知</label>
+                <div class="col-sm-9 col-xs-12">
+                    <?php if(cv('globonus.notice.edit')) { ?>
+                    <input type="text" name="data[paytitle]" class="form-control" value="<?php  echo $data['tm']['paytitle'];?>" />
+                    <div class="help-block">标题，默认"分红发放通知"</div>
+                    <?php  } else { ?>
+                    <div class='form-control-static'><?php  echo $data['tm']['paytitle'];?></div>
+                    <?php  } ?>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-lg control-label"></label>
+                <div class="col-sm-9 col-xs-12">
+                    <?php if(cv('globonus.notice.edit')) { ?>
+                    <textarea  name="data[pay]" class="form-control" rows="5" ><?php  echo $data['tm']['pay'];?></textarea>
+                    模板变量 [昵称] [打款方式] [金额] [时间]
+                    <?php  } else { ?>
+                    <div class='form-control-static'><?php  echo $data['tm']['pay'];?></div>
+                    <?php  } ?>
+                </div>
+            </div>
+
+
+            <div class="form-group">
+                <label class="col-lg control-label">股东等级升级通知</label>
+                <div class="col-sm-9 col-xs-12">
+                    <?php if(cv('globonus.notice.edit')) { ?>
+                    <input type="text" name="data[upgradetitle]" class="form-control" value="<?php  echo $data['tm']['upgradetitle'];?>" />
+                    <div class="help-block">标题，默认"股东等级升级通知"</div>
+                    <?php  } else { ?>
+                    <div class='form-control-static'><?php  echo $data['tm']['upgradetitle'];?></div>
+                    <?php  } ?>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-lg control-label"></label>
+                <div class="col-sm-9 col-xs-12">
+                    <?php if(cv('globonus.notice.edit')) { ?>
+                    <textarea  name="data[upgrade]" class="form-control" rows="5" ><?php  echo $data['tm']['upgrade'];?></textarea>
+                    模板变量: [昵称] [旧等级]  [旧分红比例] [新等级] [新分红比例] [时间]
+                    <?php  } else { ?>
+                    <div class='form-control-static'><?php  echo $data['tm']['upgrade'];?></div>
+                    <?php  } ?>
+                </div>
+            </div>
+        </div>
+
+        <div id="advanced">
+            <table class="table table-responsive">
+                <thead style="background: #ededed">
+                <th>买家通知-成为股东</th>
+                <th class="w200">模板消息</th>
+                <th class="w60 is_advanced"><!--<input class="js-switch small checkall" data-type="tpl-advanced" type="checkbox" />--></th>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>成为股东通知</td>
+                        <td>
+                            <select class="select2" <?php if(cv('globonus.notice.edit')) { ?>name="data[globonus_become_advanced]"<?php  } else { ?>disabled<?php  } ?>>
+                            <option value=''>[默认]成为股东通知</option>
+                            <?php  if(is_array($template_list['globonus_become'])) { foreach($template_list['globonus_become'] as $template_val) { ?>
+                            <option value="<?php  echo $template_val['id'];?>" <?php  if($data['tm']['globonus_become_advanced'] == $template_val['id'] ) { ?>selected<?php  } ?>><?php  echo $template_val['title'];?></option>
+                            <?php  } } ?>
+                            </select>
+                        </td>
+                        <td style="text-align: right;" class="is_advanced">
+                            <label class="notice-default">
+                                <input type="hidden" name="data[globonus_become_close_advanced]" value="<?php  echo intval($data['tm']['globonus_become_close_advanced'])?>" />
+                                <input class="js-switch small checkone" data-type="tpl-advanced"   data-tag="globonus_become" type="checkbox" value="<?php  echo intval($data['tm']['globonus_become_close_advanced'])?>" <?php  if(empty($data['tm']['globonus_become_close_advanced'])) { ?>checked<?php  } ?>/>
+                            </label>
+                            <label style="display: none;">
+                                <img src="../addons/ewei_shopv2/static/images/loading.gif" width="20" alt="" onerror="this.src='../addons/ewei_shopv2/static/images/nopic.png'" />
+                            </label>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="form-group splitter"></div>
+
+            <table class="table table-responsive">
+                <thead style="background: #ededed">
+                <th>买家通知-股东升级</th>
+                <th class="w200">模板消息</th>
+                <th class="w60 is_advanced"><!--<input class="js-switch small checkall" data-type="tpl-advanced" type="checkbox" />--></th>
+                </thead>
+                <tbody>
+                <tr>
+                    <td>股东等级升级通知</td>
+                    <td>
+                        <select class="select2" <?php if(cv('globonus.notice.edit')) { ?>name="data[globonus_upgrade_advanced]"<?php  } else { ?>disabled<?php  } ?>>
+                        <option value=''>[默认]股东等级升级通知</option>
+                        <?php  if(is_array($template_list['globonus_upgrade'])) { foreach($template_list['globonus_upgrade'] as $template_val) { ?>
+                        <option value="<?php  echo $template_val['id'];?>" <?php  if($data['tm']['globonus_upgrade_advanced'] == $template_val['id'] ) { ?>selected<?php  } ?>><?php  echo $template_val['title'];?></option>
+                        <?php  } } ?>
+                        </select>
+                    </td>
+                    <td style="text-align: right;" class="is_advanced">
+                        <label class="notice-default">
+                            <input type="hidden" name="data[globonus_upgrade_close_advanced]" value="<?php  echo intval($data['tm']['globonus_upgrade_close_advanced'])?>" />
+                            <input class="js-switch small checkone" data-type="tpl-advanced"   data-tag="globonus_upgrade" type="checkbox" value="<?php  echo intval($data['tm']['globonus_upgrade_close_advanced'])?>" <?php  if(empty($data['tm']['globonus_upgrade_close_advanced'])) { ?>checked<?php  } ?>/>
+                        </label>
+                        <label style="display: none;">
+                            <img src="../addons/ewei_shopv2/static/images/loading.gif" width="20" alt="" onerror="this.src='../addons/ewei_shopv2/static/images/nopic.png'" />
+                        </label>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+
+            <div class="form-group splitter"></div>
+
+            <table class="table table-responsive">
+                <thead style="background: #ededed">
+                <th>买家通知-分红通知</th>
+                <th class="w200">模板消息</th>
+                <th class="w60 is_advanced"><!--<input class="js-switch small checkall" data-type="tpl-advanced" type="checkbox" />--></th>
+                </thead>
+                <tbody>
+                <tr>
+                    <td>分红发放通知</td>
+                    <td>
+                        <select class="select2" <?php if(cv('globonus.notice.edit')) { ?>name="data[globonus_pay_advanced]"<?php  } else { ?>disabled<?php  } ?>>
+                        <option value=''>[默认]分红发放通知</option>
+                        <?php  if(is_array($template_list['globonus_pay'])) { foreach($template_list['globonus_pay'] as $template_val) { ?>
+                        <option value="<?php  echo $template_val['id'];?>" <?php  if($data['tm']['globonus_pay_advanced'] == $template_val['id'] ) { ?>selected<?php  } ?>><?php  echo $template_val['title'];?></option>
+                        <?php  } } ?>
+                        </select>
+                    </td>
+                    <td style="text-align: right;" class="is_advanced">
+                        <label class="notice-default">
+                            <input type="hidden" name="data[globonus_pay_close_advanced]" value="<?php  echo intval($data['tm']['globonus_pay_close_advanced'])?>" />
+                            <input class="js-switch small checkone" data-type="tpl-advanced"   data-tag="globonus_pay" type="checkbox" value="<?php  echo intval($data['tm']['globonus_pay_close_advanced'])?>" <?php  if(empty($data['tm']['globonus_pay_close_advanced'])) { ?>checked<?php  } ?>/>
+                        </label>
+                        <label style="display: none;">
+                            <img src="../addons/ewei_shopv2/static/images/loading.gif" width="20" alt="" onerror="this.src='../addons/ewei_shopv2/static/images/nopic.png'" />
+                        </label>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    <div class="form-group splitter"></div>
+    <?php if(cv('globonus.notice.edit')) { ?>
+    <div class="form-group">
+        <div class="col-sm-12 col-xs-12">
+            <input type="submit" value="提交" class="btn btn-primary" />
+        </div>
+    </div>
+    <?php  } ?>
+    </form>
+</div>
+<script>
+    $(function () {
+
+        $(".advanced").click(function(){
+            $(":input[name='data[is_advanced]']").val( this.checked ?1:0);
+            var next = $(this).next();
+            if(next.hasClass('checked')){
+                $("#advanced,#advanced_alert").show();
+                $("#normal,#normal_alert").hide();
+            }else{
+                $("#advanced,#advanced_alert").hide();
+                $("#normal,#normal_alert").show();
+            }
+        });
+
+        $(".js-switch").not(".checkhi").click(function () {
+            var next = $(this).next();
+            if(next.hasClass('checked')){
+                $(this).val("1").prev().val("0");
+            }else{
+                $(this).val("0").prev().val("1");
+            }
+        });
+
+        if($(":input[name='data[is_advanced]']").val() == 1)
+        {
+            $("#advanced,#advanced_alert").show();
+            $("#normal,#normal_alert").hide();
+        }
+        else
+        {
+            $("#advanced,#advanced_alert").hide();
+            $("#normal,#normal_alert").show();
+        }
+
+        //开启通知
+        $(".checkone").click(function () {
+            var _this =$(this);
+            var type = _this.data('type');
+            var val = _this.val();
+
+            var tag = _this.data('tag');
+            var stop = _this.data('stop');
+
+            if(stop==1)
+            {
+                return;
+            }
+
+            //判断是否开启模板通知
+            if(tag != '' && val==1&&type=='tpl-advanced') {
+                $(this).data('stop', 1);
+                $(this).parent().hide().next().show();
+
+                var data = {
+                    'tag': tag,
+                    checked:val
+                };
+                //申请微信模板,并将模板ID更新至数据库.
+                $.ajax({
+                    url: "<?php  echo webUrl('sysset/settemplateid')?>",
+                    type:'get',
+                    dataType:'json',
+                    timeout : 3000, //超时时间设置，单位毫秒
+                    data:data,
+                    success:function(ret){
+                        var _this = $(".checkone[data-tag='"+ret.result.tag+"']");
+                        if (ret.result.status == '0') {
+                            this.value=0;
+                            _this.prev().val(1);
+                            _this.next().removeClass('checked');
+
+                            console.log(ret.result.messages);
+                            alert(ret.result.messages);
+                        }
+
+                        $(_this).data('stop', 0);
+                        $(_this).parent().show().next().hide();
+                    },
+                    error: function(XMLHttpRequest, textStatus, errorThrown) {
+                        $(".table").each(function () {
+                            var _this = $(this);
+                            _this.find(".checkone[data-type='tpl-advanced']").each(function () {
+                                $(this).data('stop', 0);
+                                $(this).parent().show().next().hide();
+                            });
+                        });
+                    }
+                });
+            }
+
+
+            var type = $(this).data('type');
+            var val = $(this).val();
+            if(val==0){
+                $(this).attr("checked","false").val("1").next().removeClass("checked");
+                $(this).closest(".table").find(".checkall[data-type='"+type+"']").val("1").attr("checked","false").next().removeClass("checked");
+            }else{
+                $(this).attr("checked","true").val("0").next().addClass("checked");
+                var all = true;
+                $(this).closest(".table").find(".checkone[data-type='"+type+"']").each(function () {
+                    var val = $(this).val();
+                    if(val!='on' && val==1){
+                        all = false;
+                        return;
+                    }
+                });
+                if(all){
+                    $(this).closest(".table").find(".checkall[data-type='"+type+"']").val("0").attr("checked","true").next().addClass("checked");
+                }
+            }
+
+        });
+
+        $(".table").each(function () {
+            var _this = $(this);
+            var all_tpl_normal = true;
+            var all_tpl_advanced = true;
+            var all_sms = true;
+            _this.find(".checkone[data-type='tpl-advanced']").each(function () {
+                var val = $(this).val();
+                if(val!='on' && val==1){
+                    all_tpl_advanced = false;
+                    return;
+                }
+            });
+            _this.find(".checkone[data-type='sms']").each(function () {
+                var val = $(this).val();
+                if(val!='on' && val==1){
+                    all_sms = false;
+                    return;
+                }
+            });
+            if(all_tpl_normal){
+                _this.find(".checkall[data-type='tpl-normal']").val("0").attr("checked","true").next().addClass("checked");
+            }
+            if(all_tpl_advanced){
+                _this.find(".checkall[data-type='tpl-advanced']").val("0").attr("checked","true").next().addClass("checked");
+            }
+            if(all_sms){
+                _this.find(".checkall[data-type='sms']").val("0").attr("checked","true").next().addClass("checked");
+            }
+        });
+    })
+</script>
+<?php (!empty($this) && $this instanceof WeModuleSite || 1) ? (include $this->template('_footer', TEMPLATE_INCLUDEPATH)) : (include template('_footer', TEMPLATE_INCLUDEPATH));?>

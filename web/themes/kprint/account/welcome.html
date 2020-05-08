@@ -1,0 +1,318 @@
+{template 'common/header-kp'}
+    <body>
+        <header>
+            <div class="logo">
+                <img src="./themes/{$settings['basic']['template']}/account/images/logo.png" alt="{$_W['page']['copyright']['sitename']}互联网营销专家" class="img-responsive" />
+            </div>
+            <strong class="words">互联网营销专家</strong>
+            <nav class="menu">
+                <ul class="list-inline">
+                    <li class="active"><a>首页</a></li>
+                    <li><a>业务</a></li>
+                    <li><a>案例</a></li>
+                    <li><a>客户</a></li>
+                    <li><a>技术</a></li>
+                    <li><a>营销</a></li>
+                    <li><a>关于</a></li>
+                    <li><a>联系</a></li>
+                    <li><a href="{url 'user/login'}">登录</a></li>
+                    {if !empty($settings['register']['open'])}
+                    <li><a href="{url 'user/register'}">注册</a></li>
+                    {/if}
+                </ul>
+            </nav>
+            <div class="hotline">
+                <a href="tel:{$copyright['phone']}" title="商务合作咨询热线"><span>{$copyright['phone']}</span></a><u></u>
+            </div>
+            <div class="menu-icon">
+                <a href="tel:{$copyright['phone']}" title="点击直拨咨询热线"><span class="glyphicon glyphicon-earphone"></span></a>
+                <span class="glyphicon glyphicon-th-large"></span>
+            </div>
+        </header>
+
+        <div class="welcome"><p><u>Loading . . .</u></p></div>
+
+        <section class="video">
+            <div class="swiper-container">
+                <div class="swiper-wrapper">
+                    <div class="swiper-slide nth1">
+                        <div class="box">
+                            <div class="left"></div>
+                            <div class="right">
+                                <span>年专注，互联网+</span><i></i>
+                                <p>道生一，一生二，二生三，三生万物<br />万物互联，互联无界</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="swiper-slide nth2">
+                        <div class="box">
+                            <span>微信公众号定制开发</span><i></i>
+                            <p>微餐饮，微小区，微商城，微电影，<br />微便民，微小店等全行业功能应有尽有</p>
+                        </div>
+                    </div>
+                    <div class="swiper-slide nth3">
+                        <div class="box">
+                            <div class="top">微信广告</div>
+                            <div class="mid"></div>
+                            <div class="bottom">流量就是力量，影响力就是生产力<br />朋友圈广告，按筛选条件指定地域精准投放</div>
+                        </div>
+                    </div>
+                    <div class="swiper-slide nth4">
+                        <div class="box">
+                            <div class="top"><span>小程序开发</span><i></i></div>
+                            <div class="bottom">微信<u>小程序</u>定制<u>开发</u><br />抢占未来商机<br />布局<u>小程序</u>端口，跟上时代，步步为赢</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="innerBox">
+                <div class="news">
+                    <span>NEWS :</span>
+                    <a href="http://vv70.cn" title="更多动态" class="more" target="_blank">more</a>
+                    <ul>
+                        <li><a href="http://w.url.cn/s/AvD06EL" target="_blank" title="农村电商平台上线，免开店，免注册">农村电商平台上线，免开店，免注册...</a></li>
+                        <li><a href="#" target="_blank" title="2017鸡年大吉，道生一传媒全体员工给新老">2017鸡年大吉，道生一传媒全体员工给新老...</a></li>
+						<li><a href="http://h.eqxiu.com/s/vf49e67L" target="_blank" title="道生一文化传媒运营团队介绍">道生一文化传媒运营团队介绍...</a></li>
+
+                    </ul>
+                </div>
+                <div class="guide"></div>
+                <a class="movedown"></a>
+            </div>
+        </section>
+
+        <section class="business">
+            <div class="box">
+                <div class="caption">
+                    <i></i><span>我们能做什么</span>
+                    <br class="clear" />
+                </div>
+                <ul class="items list-inline">
+                    <li class="pc">
+                        <i></i><strong>公众号定制开发</strong>
+                        <p>吸粉靠服务<br />变现靠技术</p>
+                    </li>
+                    <li class="mobi">
+                        <i></i><strong>移动网站建设</strong>
+                        <p>定制手机网站 / 微网站制作<br />布局移动互联网</p>
+                    </li>
+                    <li class="sys">
+                        <i></i><strong>微信广告投放</strong>
+                        <p>精准投放广告<br />效益提升看得见</p>
+                    </li>
+                    <li class="app">
+                        <i></i><strong>营销活动策划</strong>
+                        <p>百场O2O活动策划经验<br />抓住热点，引爆市场</p>
+                    </li>
+                    <li class="host">
+                        <i></i><strong>小程序开发</strong>
+                        <p>微信小程序<br />未来互联网大趋势</p>
+                    </li>
+                </ul>
+            </div>
+        </section>
+
+
+        <section class="cases">
+            <div class="box">
+                <div class="caption">
+                    <i></i><span>案例欣赏</span>
+                    <br class="clear" />
+                </div>
+                <div class="swiper-container items">
+                    <div class="swiper-wrapper">
+                        <div class="swiper-slide">
+                            <a href="http://wxeae52e376a71009b.m.weimob.com/microtakeout/menu/Index/sp_id/90330/wechat_id/oA9Ozv_b69KPHBKF2HEPJ4EJ0c5I/weimob_id/a079cae0cd4596ee37acff6ed9117ac5/aid/55759259" target="_blank">
+                                <img src="./themes/{$settings['basic']['template']}/account/images/1-1504291a0160-l.jpg" alt="耀记烧味外卖系统" />
+                                <p>公众号开发<br /><strong>耀记烧味外卖系统</strong><br />微外卖,单店版</p></a>
+                        </div>
+                        <div class="swiper-slide">
+                            <a href="http://baidu.ku6.com/watch/841569258826578921.html?page=videoMultiNeed" target="_blank">
+                                <img src="./themes/{$settings['basic']['template']}/account/images/1-1504291649100-l.jpg" alt="百大万人摇一摇活动" />
+                                <p>O2O活动策划<br /><strong>百大万人摇一摇活动</strong><br />O2O活动,微信营销</p></a>
+                        </div>
+                        <div class="swiper-slide">
+                            <a href="http://55625577.m.weimob.com/vshop/index?PageId=254448" target="_blank">
+                                <img src="./themes/{$settings['basic']['template']}/account/images/1-150429164j40-l.jpg" alt="云南特汇商城" />
+                                <p>微网站设计<br /><strong>云南特汇商城</strong><br />微商城,订单系统</p></a>
+                        </div>
+
+                    </div>
+                </div>
+                <!--<a href="#" title="欣赏更多案例" class="more" target="_blank">MORE</a>-->
+            </div>
+        </section>
+
+
+        <section class="clients">
+            <div class="box">
+                <div class="caption">
+                    <i></i><span>合作伙伴</span>
+                    <br class="clear" />
+                </div>
+                <ul class="items list-inline">
+                    <li class="cctv"><span>广西东宏农业科技有限公司</span></li>
+                    <li class="unicom"><span>贺州靖东玻璃工艺有限公司</span></li>
+                    <li class="tsinghua"><span>贺州恒洋商贸有限公司</span></li>
+                    <li class="cas"><span>启德凯丽集成墙板全屋整装有限公司</span></li>
+                    <li class="sipo"><span>广西昭平县合水茶叶专业合作社（思勤江茶业）</span></li>
+                    <li class="apple"><span>广西优圣网络科技有限公司贺州分公司</span></li>
+                    <li class="das"><span>钟山县河东商贸城艾尚美美甲店</span></li>
+                    <li class="hunantv"><span>昭平壹零八美发工作室</span></li>
+                    <li class="sino"><span>昭平壹零八美发工作室</span></li>
+                    <li class="report"><span>广西优圣网络科技有限公司贺州分公司</span></li>
+                    <li class="gedu"><span>钟山县河东商贸城艾尚美美甲店</span></li>
+                    <li class="bgg"><span>京粮集团网站建设</span></li>
+                    <li class="bsec"><span>北赛电工官方网站设计</span></li>
+                    <li class="huadan"><span>华丹乳业官方网站建设</span></li>
+                    <li class="zd"><span>中东集团网站制作</span></li>
+                </ul>
+            </div>
+        </section>
+
+
+       <section class="quality">
+            <div class="box">
+                <div class="caption">
+                    <i></i><span>你的品牌，需要装扮</span>
+                    <br class="clear" />
+                </div>
+                <div class="swiper-container items">
+                    <div class="swiper-wrapper">
+                        <div class="swiper-slide nth1">
+                            <ul class="list-inline">
+                                <li class="mobi"><span>公众号导航设计</span></li><li class="pad"><span>响应式平板网站建设</span></li><li 
+class="pc"><span>响应式PC网站建设</span></li>
+                            </ul>
+                            <p>触及视觉灵魂的公众号内页<br />快速裂变的粉丝互动系统<br />方便快捷的订单系统<br />
+                        </div>
+                        <div class="swiper-slide nth2">
+                            <ul class="list-inline">
+                                <li class="ie"><span>兼容微软IE浏览器的网页设计</span></li><li class="chrome"><span>兼容谷歌Chrome浏览器的网站设
+计</span></li><li class="firefox"><span>兼容火狐Firefox浏览器的网页设计</span></li><li class="safari"><span>兼容苹果Safari浏览器的网站设计
+</span></li>
+                            </ul>
+                            <p>Html5微官网制作<br />卓越的浏览器兼容性<br />因为高端，所以出众</p>
+                        </div>
+                        <div class="swiper-slide nth3">
+                            <ul class="list-inline">
+                                <li class="windows"><span>跨windows平台网站制作</span></li><li class="ios"><span>跨ios平台网站制作</span></li><li 
+class="andriod"><span>跨andriod平台网站制作</span></li>
+                            </ul>
+                            <p>基于 B/S 架构的网站建设<br />无障碍的跨平台应用<br />独立后台便捷管理<br />
+                        </div>
+                    </div>
+                </div>
+                <a href="http://0qq0.top/" class="lookall" target="_blank">你以为看到了网站的全部？</a>
+            </div>
+        </section>
+
+        <section class="marketing">
+            <div class="box">
+                <div class="caption">
+                    <i></i><span>流量就是力量</span>
+                    <br class="clear" />
+                </div>
+                <ul class="items list-inline">
+                    <li class="se">
+                        <i></i><strong>搜索引擎</strong>
+                        <p>SEO 优化<br />搜索引擎竞价</p>
+                    </li>
+                    <li class="weixin">
+                        <i></i><strong>微信营销</strong>
+                        <p>公众账号 / 微网站<br />粉丝经济</p>
+                    </li>
+                    <li class="weibo">
+                        <i></i><strong>微博互动</strong>
+                        <p>微博头条<br />官V认证，粉丝互动</p>
+                    </li>
+                    <li class="sms">
+                        <i></i><strong>广告推送</strong>
+                        <p>微信图文推送<br />文内广告植入</p>
+                    </li>
+                    <li class="pay">
+                        <i></i><strong>移动支付</strong>
+                        <p>微信、支付宝<br />在线便捷支付</p>
+                    </li>
+                    <li class="bbs">
+                        <i></i><strong>小程序</strong>
+                        <p>无需技术<br />人人都会运营</p>
+                    </li>
+                </ul>
+            </div>
+        </section>
+
+
+        <section class="aboutus">
+            <ul class="menu"><li>公司</li><li>媒体</li><li>招聘</li></ul>
+            <div class="swiper-container items">
+                <div class="swiper-wrapper">
+                    <div class="swiper-slide nth1">
+                        <strong>道生一文化传媒</strong>
+                        <p>道生一文化传媒成立于2016年<br />注册资金100万<br />致力于发展全行业互联网+</p>
+                        <u>万物互联，互联无界</u>
+                    </div>
+                    <div class="swiper-slide nth2">
+                        <strong>来，关注我们</strong>
+                        <p>贺州一二三<br />自运营贺州本地公众号<br />影响力就是生产力</p>
+                        <p>搜索公众号：贺州一二三</p>
+                    </div>
+                    <div class="swiper-slide nth3">
+                        <strong>来，征服我们</strong>
+                        <ul>
+                            
+                            <li>网络编辑<u>-</u>视野宽，思维快，网罗天下，编织佳话。</li>
+							<li>视频录音<u>-</u>懂幽默，接地气，一语惊人，笑出泪花。</li>
+							<li>媒体运营<u>-</u>人脉多，资源广，运筹帷幄，营造未来。</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <table class="exp">
+                <tr>
+                    <td><u>诚信</u>诚信赢天下</td>
+                    <td><u>梦想</u>人总要有梦想</td>
+                    <td><u>创新</u>不走寻常路</td>
+                    <td><u>团队</u>没有完美的个人</td>
+                    <td><u>执行</u>言必行，行必果</td>
+                </tr>
+            </table>
+        </section>
+
+        <section class="contact">
+            <div class="box">
+                <div class="above">
+                    <div class="wechat"><img src="./themes/{$settings['basic']['template']}/account/images/wechat_code.jpg" alt="扫描添加贺州123公众号" /></div>
+					<div class="left">
+                        <p>联系人：林波<br>
+                            QQ：1948272595<br>
+                            电话：{$copyright['phone']}<br>
+                            公司：{$copyright['company']}</p>
+                    </div>
+                    <div class="right">
+                        <a>Email：linbowork@sina.com</a><br />Copyright 2015-2017<u></u>道生一传媒 版权所有<br />粤ICP备16111748号-2<br />
+                    </div>
+                </div>
+            </div>
+        </section>
+
+
+        <div class="dock">
+            <ul class="icons">
+                <li class="up"><i></i></li>
+                <li class="im">
+                    <i></i><p>合作咨询<br />投诉建议，请点我<a href="tencent://message/?uin={$copyright['qq']}&Site=sc.chinaz.com&Menu=yes">在线咨询</a></p>
+                </li>
+                <li class="tel">
+                    <i></i><p>合作咨询热线：<br />{$copyright['phone']}<br />售后服务热线：<br />{$copyright['phone']}</p>
+                </li>
+                <li class="wechat">
+                    <i></i><p><img src="./themes/{$settings['basic']['template']}/account/images/wechat_code.jpg" alt="扫描联系商务合作微信" /></p>
+                </li>
+                <li class="down"><i></i></li>
+            </ul>
+            <a class="switch"></a>
+        </div>
+
+    </body>
+</html>

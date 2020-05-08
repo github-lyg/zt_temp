@@ -1,0 +1,213 @@
+{template '_header'}
+
+<script>document.title = "排行榜";</script>
+
+<link rel="stylesheet" href="../addons/ewei_shopv2/plugin/dividend/template/mobile/default/static/css/ranking.css">
+<style>
+    .phb_top {
+        font-size: 20px;
+        padding: 10px 0;
+        text-align: center;
+    }
+
+    .phb_user {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: space-around;
+        background-color: #FF5555;
+        color: #ffffff;
+        text-align: center;
+        padding: 30px 0;
+    }
+
+    .phb_user img {
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        border: 2px solid #ffffff;
+    }
+
+    .phb_user p {
+        width: 100%;
+        font-size: 14px;
+        padding: 10px 0;
+    }
+
+    .phb_user span {
+        font-size: 12px;
+    }
+
+    .phb_allp {
+        border-top: 10px solid #F5F5F5;
+    }
+
+    .allp_nav {
+        display: flex;
+        justify-content: space-between;
+    }
+
+    .allp_nav div {
+        flex: 1;
+        padding: 10px 0;
+        text-align: center;
+        border-bottom: 1px solid #F5F5F5;
+        color: #808080;
+        font-size: 14px;
+    }
+
+    .allpative {
+        border-bottom: 2px solid #FF5555 !important;
+        color: #FF5555 !important;
+    }
+
+    .allp_all {
+        padding: 0 10px;
+        display: none;
+    }
+
+    .allp_item {
+        display: flex;
+        align-items: center;
+        padding: 10px 0;
+        border-bottom: 1px solid #f5f5f5;
+    }
+
+    .allp_ipm {
+        width: 20px;
+        height: 20px;
+        text-align: center;
+        font-size: 12px;
+    }
+
+    .allp_itun {
+        flex: 1;
+        padding-left: 10px;
+        display: flex;
+        align-items: center;
+    }
+
+    .allp_itun img {
+        width: 26px;
+        height: 26px;
+        border-radius: 50%;
+    }
+
+    .allp_itun p {
+        flex: 1;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        padding: 0 10px;
+    }
+
+    .allp_itun div {
+        width: 30%;
+        font-size: 12px;
+    }
+
+    .allp_itun div span {
+        color: #FF5555;
+    }
+
+    .allp_all .allp_item:nth-child(1) .allp_ipm {
+        background: url(../addons/ewei_shopv2/plugin/dividend/template/mobile/default/static/images/1.png) no-repeat;
+        background-size: 100% 100%;
+        color: rgba(0, 0, 0, 0);
+    }
+
+    .allp_all .allp_item:nth-child(2) .allp_ipm {
+        background: url(../addons/ewei_shopv2/plugin/dividend/template/mobile/default/static/images/2.png) no-repeat;
+        background-size: 100% 100%;
+        color: rgba(0, 0, 0, 0);
+    }
+
+    .allp_all .allp_item:nth-child(3) .allp_ipm {
+        background: url(../addons/ewei_shopv2/plugin/dividend/template/mobile/default/static/images/3.png) no-repeat;
+        background-size: 100% 100%;
+        color: rgba(0, 0, 0, 0);
+    }
+
+    .allp_show {
+        display: block;
+    }
+</style>
+</head>
+<body>
+<div class="phb_top">排行榜</div>
+<div class="phb_user">
+    <img src="{if $row['avatar']} {$memberInfo['avatar']} {else} ../addons/ewei_shopv2/static/images/noface.png {/if}" alt="">
+    <p>{$memberInfo['nickname']}</p>
+    <span class="allp_all allp_show amountRanking">
+        {if is_numeric($memberInfo['amountRanking'])}
+
+        NO.
+
+        {/if}
+
+        {$memberInfo['amountRanking']}
+    </span>
+    <span class="allp_all totalRanking">
+        {if is_numeric($memberInfo['totalRanking'])}
+
+        NO.
+
+        {/if}
+
+        {$memberInfo['totalRanking']}
+    </span>
+</div>
+
+
+<div class="phb_allp">
+    <div class="allp_nav">
+        <div class="allpqh allpative" sh=1>业绩</div>
+        <div class="allpqh" sh=2>人数</div>
+    </div>
+    <ul class="allp_all allp_show amountRanking" sh=1>
+        {loop $amountRanking $row}
+        <li class="allp_item">
+            <p class="allp_ipm">1</p>
+            <div class="allp_itun">
+                <img src="{if $row['avatar']}{$row['avatar']} {else} ../addons/ewei_shopv2/static/images/noface.png {/if}" alt="">
+                <p>{$row['nickname']}</p>
+                <div>金额：¥<span>{$row['amount']}</span></div>
+            </div>
+        </li>
+        {/loop}
+    </ul>
+    <ul class="allp_all totalRanking" sh=2>
+        {loop $totalRanking $row}
+        <li class="allp_item">
+            <p class="allp_ipm">1</p>
+            <div class="allp_itun">
+                <img src="{$row['avatar']}" alt="">
+                <p>{$row['nickname']}</p>
+                <div>人数：<span>{$row['counts']}</span></div>
+            </div>
+        </li>
+        {/loop}
+    </ul>
+</div>
+</body>
+<script src="js/jquery-1.10.1.min.js"></script>
+<script>
+    $(".allpqh").click(function () {
+
+        $(this).addClass("allpative");
+
+        $(".allpqh").not(this).removeClass("allpative");
+
+        var type = $(this).attr("sh");
+        //alert(type);
+        if (type == 1) {
+            $('.amountRanking').addClass("allp_show");
+            $('.totalRanking').removeClass("allp_show");
+        } else {
+            $('.totalRanking').addClass("allp_show");
+            $('.amountRanking').removeClass("allp_show");
+        }
+
+    });
+</script>
+</html>

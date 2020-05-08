@@ -1,0 +1,160 @@
+<html>
+    <!DOCTYPE html>
+    <html lang="en" class="no-js">
+
+        <head>
+
+            <meta charset="utf-8">
+            <title>{php if(isset($title)) $_W['page']['title'] = $title}{if !empty($_W['page']['title'])}{$_W['page']['title']} - {/if}{if empty($_W['page']['copyright']['sitename'])}{if IMS_FAMILY != 'x'}微擎 - 公众平台自助引擎 -  Powered by WE7.CC{/if}{else}{$_W['page']['copyright']['sitename']}{/if}</title>
+
+            <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0,user-scalable=no" />
+
+            <meta name="description" content="">
+            <meta name="author" content="">
+
+            <!-- CSS -->
+            <link rel="stylesheet" href="./themes/{$_W['setting']['basic']['template']}/user/assets/css/reset.css">
+            <link rel="stylesheet" href="./themes/{$_W['setting']['basic']['template']}/user/assets/css/supersized.css">
+            <link rel="stylesheet" href="./themes/{$_W['setting']['basic']['template']}/user/assets/css/style.css">
+
+            <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+            <!--[if lt IE 9]>
+                <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+            <![endif]-->
+
+        </head>
+
+        <body>
+            <div class="page-container">
+                <!--<h1>{$_W['page']['copyright']['sitename']}(Login)</h1>-->
+                <img src="{php echo tomedia($_W['setting']['copyright']['flogo']);}"></img>
+                <form action="" method="post" role="form" id="form1" onsubmit="return formcheck();">
+                    <input type="text" name="username" class="username" placeholder="请输入您的用户名！">
+                    <input type="password" name="password" class="password" placeholder="请输入您的用户密码！">
+                    {if !empty($_W['setting']['copyright']['verifycode'])}
+                    <input type="text" class="Captcha" id="verify" name="verify" placeholder="请输入验证码！">
+                    <a href="javascript:;" id="toggle" style="text-decoration: none;    float: right;  margin-top: 25px;"><img style="border-radius: 5px;-webkit-border-radius: 5px;-moz-border-radius: 5px;" id="imgverify" src="{php echo url('utility/code')}" title="点击图片更换验证码"/></a>
+                    {/if}
+                    <button type="submit" class="submit_button" id="submit"  name="submit" value="登录" >登录</button>
+                    <input name="token" value="{$_W['token']}" type="hidden" />
+                    <div class="error"><span>+</span></div>
+                </form>
+				<br/>
+<div class="text-right">
+					{if !$_W['siteclose'] && $setting['register']['open']}
+						没有账号？<a href="{url 'user/register'}" class="color-default">立即注册</a>
+					{/if}
+				</div>
+				<input name="token" value="{$_W['token']}" type="hidden" />
+			</div>
+		</form>
+	</div>
+</div>
+            </div>
+
+            <!-- Javascript -->
+            <script src="./themes/{$_W['setting']['basic']['template']}/user/assets/js/jquery-1.8.2.min.js" ></script>
+            <script src="./themes/{$_W['setting']['basic']['template']}/user/assets/js/supersized.3.2.7.min.js" ></script>
+
+        </body>
+
+        <script>
+                            jQuery(function ($) {
+
+                                $.supersized({
+                                    // 功能
+                                    slide_interval: 4000, // 转换之间的长度
+                                    transition: 1, // 0 - 无，1 - 淡入淡出，2 - 滑动顶，3 - 滑动向右，4 - 滑底，5 - 滑块向左，6 - 旋转木马右键，7 - 左旋转木马
+                                    transition_speed: 1000, // 转型速度
+                                    performance: 1, // 0 - 正常，1 - 混合速度/质量，2 - 更优的图像质量，三优的转换速度//（仅适用于火狐/ IE浏览器，而不是Webkit的）
+
+                                    // 大小和位置
+                                    min_width: 0, // 最小允许宽度（以像素为单位）
+                                    min_height: 0, // 最小允许高度（以像素为单位）
+                                    vertical_center: 1, // 垂直居中背景
+                                    horizontal_center: 1, // 水平中心的背景
+                                    fit_always: 0, // 图像绝不会超过浏览器的宽度或高度（忽略分钟。尺寸）
+                                    fit_portrait: 1, // 纵向图像将不超过浏览器高度
+                                    fit_landscape: 0, // 景观的图像将不超过宽度的浏览器
+
+                                    // 组件
+                                    slide_links: 'blank', // 个别环节为每张幻灯片（选项：假的，'民'，'名'，'空'）
+                                    slides: [// 幻灯片影像
+                                        {image: "./themes/{$_W['setting']['basic']['template']}/user/assets/img/1.jpg"},
+                                        {image: "./themes/{$_W['setting']['basic']['template']}/user/assets/img/2.jpg"},
+                                        {image: "./themes/{$_W['setting']['basic']['template']}/user/assets/img/3.jpg"}
+                                    ]
+
+                                });
+
+                            });
+                            
+                    function formcheck() {
+//                if ($('#remember:checked').length == 1) {
+//                    cookie.set('remember-username', $(':text[name="username"]').val());
+//                } else {
+//                    cookie.del('remember-username');
+//                }
+
+                        return true;
+                    }
+
+                    $('#toggle').click(function () {
+                        $('#imgverify').prop('src', "{php echo url('utility/code')}r=" + Math.round(new Date().getTime()));
+                        return false;
+                    });
+
+                    jQuery(document).ready(function () {
+
+                        $('.page-container form').submit(function () {
+                            var username = $(this).find('.username').val();
+                            var password = $(this).find('.password').val();
+                            var verify = $("#verify").val();
+
+                            if (username == '') {
+                                $(this).find('.error').fadeOut('fast', function () {
+                                    $(this).css('top', '27px');
+                                });
+                                $(this).find('.error').fadeIn('fast', function () {
+                                    $(this).parent().find('.username').focus();
+                                });
+                                return false;
+                            }
+
+                            if (password == '') {
+                            $(this).find('.error').fadeOut('fast', function () {
+                                $(this).css('top', '96px');
+                            });
+                                    $(this).find('.error').fadeIn('fast', function () {
+                                $(this).parent().find('.password').focus();
+                            });
+                                    return false;
+                            }
+                            {if !empty($_W['setting']['copyright']['verifycode'])}
+                            if (verify == '') {
+                            $(this).find('.error').fadeOut('fast', function () {
+                                $(this).css('top', '160px');
+                            });
+                                    $(this).find('.error').fadeIn('fast', function () {
+                                $(this).parent().find('.verify').focus();
+                            });
+                                    return false;
+                            }
+                            {/if}
+
+                                    return true;
+                        });
+
+                        $('.page-container form .username, .page-container form .password').keyup(function () {
+                            $(this).parent().find('.error').fadeOut('fast');
+                        });
+
+                    });
+
+
+        </script>
+
+
+
+    </html>
+

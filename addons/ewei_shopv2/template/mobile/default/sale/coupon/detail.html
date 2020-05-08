@@ -1,0 +1,34 @@
+{template '_header'}
+
+<link rel="stylesheet" type="text/css" href="../addons/ewei_shopv2/template/mobile/default/static/css/coupon-new.css?v=2017030310125">
+<div class="fui-page">
+
+	<div class="fui-header">
+		<div class="fui-header-left">
+			<a class="back" href="{php echo mobileUrl('sale/coupon')}"></a>
+		</div>
+		<div class="title">详情</div>
+		<div class="fui-header-left"></div>
+	</div>
+
+	<div class="fui-content navbar coupon-page backg">
+
+	</div>
+
+	
+</div>
+<style>
+	.backg{
+		width: 10rem;
+		height: 10rem;
+		background:url('../addons/ewei_shopv2/static/images/coupon_backg.png') no-repeat}
+	}
+</style>
+
+<script language='javascript'>
+	require(['biz/sale/coupon/detail'], function (modal) {
+		modal.init({coupon: {php echo json_encode($coupon)}});
+	});
+</script>
+{template '_footer'}
+<!--4000097827-->

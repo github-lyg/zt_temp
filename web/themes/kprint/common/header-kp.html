@@ -1,0 +1,17 @@
+<!doctype html>
+<html lang="zh-cn">
+    <head>
+        <meta charset="UTF-8">
+        <title>{php if(isset($title)) $_W['page']['title'] = $title}{if !empty($_W['page']['title'])}{$_W['page']['title']} - {/if}{if empty($_W['page']['copyright']['sitename'])}{if IMS_FAMILY != 'x'}微擎 - 公众平台自助引擎 -  Powered by WE7.CC{/if}{else}{$_W['page']['copyright']['sitename']}{/if}</title>
+        <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0,user-scalable=no" />
+        <link href="./themes/{$settings['basic']['template']}/account/css/bootstrap.min.css" rel="stylesheet" />
+        <link href="./themes/{$settings['basic']['template']}/account/css/index.css" rel="stylesheet" />
+        <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+        <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+        <!--[if lt IE 9]>
+        <script src="//cdn.bootcss.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+        <script src="//cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+        <![endif]-->
+        <script src="./themes/{$settings['basic']['template']}/account/js/jquery.min.js"></script>
+        <script src="./themes/{$settings['basic']['template']}/account/js/index.min.js"></script>
+    </head>
