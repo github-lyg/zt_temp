@@ -2,6 +2,7 @@
 {
 	exit( "Access Denied" );
 }
+
 class Member_EweiShopV2Model 
 {
 	public function getInfo($openid = "") 

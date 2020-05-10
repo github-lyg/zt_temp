@@ -509,6 +509,8 @@ class Index_EweiShopV2Page extends WebPage
 			$goodsinfo = pdo_fetch($sqlgoods, array( ":id" => $id, ":uniacid" => $_W["uniacid"] ));
 			$goodsinfo = m("goods")->getOneMinPrice($goodsinfo);
 			pdo_update("ewei_shop_goods", array( "minprice" => $goodsinfo["minprice"], "maxprice" => $goodsinfo["maxprice"] ), array( "id" => $id, "uniacid" => $_W["uniacid"] ));
+			// 设置merchid=1 checked=1
+			pdo_update('ewei_shop_goods', array('merchid' => '1','checked' => '1'), array('id' => $id));
 			if( $data["type"] == 3 && $com_virtual ) 
 			{
 				$com_virtual->updateGoodsStock($id);

@@ -90,8 +90,12 @@ class MembercardModel extends PluginModel
 		$params = array( ":uniacid" => $_W["uniacid"], ":isdelete" => 0, ":openid" => $openid );
 		$now_time = TIMESTAMP;
 		$condition .= " and (h.expire_time=-1 or h.expire_time>" . $now_time . ")";
-		$list = pdo_fetchall("SELECT c.*,h.openid,h.expire_time\r\n\t\t\t\tFROM " . tablename("ewei_shop_member_card_history") . " as h\r\n\t\t\t\tleft join " . tablename("ewei_shop_member_card") . " as c on c.id = h.member_card_id\r\n\t\t\t\tWHERE 1 " . $condition . "  ORDER BY h.receive_time DESC limit " . $limit . " ", $params);
-		$total = pdo_fetchcolumn("SELECT COUNT(h.id) FROM " . tablename("ewei_shop_member_card_history") . " as h where 1  " . $condition . " limit 1", $params);
+		try {
+			$list = pdo_fetchall("SELECT c.*,h.openid,h.expire_time\r\n\t\t\t\tFROM " . tablename("ewei_shop_member_card_history") . " as h\r\n\t\t\t\tleft join " . tablename("ewei_shop_member_card") . " as c on c.id = h.member_card_id\r\n\t\t\t\tWHERE 1 " . $condition . "  ORDER BY h.receive_time DESC limit " . $limit . " ", $params);
+			$total = pdo_fetchcolumn("SELECT COUNT(h.id) FROM " . tablename("ewei_shop_member_card_history") . " as h where 1  " . $condition . " limit 1", $params);
+		} catch (\Throwable $th) {
+			//throw $th;
+		}
 		if( $list ) 
 		{
 			foreach( $list as $key => $val ) 
