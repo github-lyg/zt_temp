@@ -35,9 +35,13 @@ class Getrecord_EweiShopV2Page extends PluginWebPage
 				}
 			}
 		}
-		$sql = "SELECT mch.*,mc.create_time,m.uid,m.avatar,m.nickname,m.id as mid FROM  \r\n            " . tablename("ewei_shop_member_card_history") . " as mch \r\n            LEFT JOIN   " . tablename("ewei_shop_member_card") . " as mc on mch.member_card_id=mc.id \r\n            LEFT JOIN " . tablename("ewei_shop_member") . " as m on mch.openid=m.openid\r\n            where " . $condition . " GROUP BY mch.id HAVING COUNT( m.openid ) >=1 ORDER BY mch.receive_time DESC limit " . ($pindex - 1) * $psize . "," . $psize;
-		$list = pdo_fetchall($sql, $params);
-		$total = pdo_fetchcolumn("SELECT count(DISTINCT mch.id)  FROM   \r\n            " . tablename("ewei_shop_member_card_history") . " mch \r\n            LEFT JOIN   " . tablename("ewei_shop_member_card") . " mc on mch.member_card_id=mc.id \r\n            LEFT JOIN " . tablename("ewei_shop_member") . " as m on mch.openid=m.openid\r\n            where " . $condition . "  ORDER BY mch.receive_time DESC ", $params);
+		try {
+			$sql = "SELECT mch.*,mc.create_time,m.uid,m.avatar,m.nickname,m.id as mid FROM  \r\n            " . tablename("ewei_shop_member_card_history") . " as mch \r\n            LEFT JOIN   " . tablename("ewei_shop_member_card") . " as mc on mch.member_card_id=mc.id \r\n            LEFT JOIN " . tablename("ewei_shop_member") . " as m on mch.openid=m.openid\r\n            where " . $condition . " GROUP BY mch.id HAVING COUNT( m.openid ) >=1 ORDER BY mch.receive_time DESC limit " . ($pindex - 1) * $psize . "," . $psize;
+			$list = pdo_fetchall($sql, $params);
+			$total = pdo_fetchcolumn("SELECT count(DISTINCT mch.id)  FROM   \r\n            " . tablename("ewei_shop_member_card_history") . " mch \r\n            LEFT JOIN   " . tablename("ewei_shop_member_card") . " mc on mch.member_card_id=mc.id \r\n            LEFT JOIN " . tablename("ewei_shop_member") . " as m on mch.openid=m.openid\r\n            where " . $condition . "  ORDER BY mch.receive_time DESC ", $params);
+		} catch (\Throwable $th) {
+			//throw $th;
+		}
 		$pager = pagination2($total, $pindex, $psize);
 		include($this->template());
 	}

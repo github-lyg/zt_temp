@@ -37,9 +37,13 @@ class Delrecord_EweiShopV2Page extends PluginWebPage
 		$condition .= " AND mch.isdelete=1";
 		$condition .= " AND mch.member_card_id=:id";
 		$params = array( ":uniacid" => $_W["uniacid"], ":id" => $id );
-		$sql = "SELECT mch.user_name,mch.telephone,mch.receive_time,mch.expire_time,mc.del_time,m.uid,m.avatar,m.nickname,m.id as mid  FROM   " . tablename("ewei_shop_member_card_history") . " mch \r\n        LEFT JOIN   " . tablename("ewei_shop_member_card") . " mc on mch.member_card_id=mc.id \r\n        LEFT JOIN " . tablename("ewei_shop_member") . " as m on mch.openid=m.openid \r\n        where " . $condition . "  ORDER BY del_time DESC limit " . ($pindex - 1) * $psize . "," . $psize . " ";
-		$list = pdo_fetchall($sql, $params);
-		$total = pdo_fetchcolumn("SELECT count(mch.id)  FROM   " . tablename("ewei_shop_member_card_history") . " mch LEFT JOIN   " . tablename("ewei_shop_member_card") . " mc on mch.member_card_id=mc.id where " . $condition . "  ORDER BY mc.del_time DESC limit " . ($pindex - 1) * $psize . "," . $psize . " ", $params);
+		try {
+			$sql = "SELECT mch.user_name,mch.telephone,mch.receive_time,mch.expire_time,mc.del_time,m.uid,m.avatar,m.nickname,m.id as mid  FROM   " . tablename("ewei_shop_member_card_history") . " mch \r\n        LEFT JOIN   " . tablename("ewei_shop_member_card") . " mc on mch.member_card_id=mc.id \r\n        LEFT JOIN " . tablename("ewei_shop_member") . " as m on mch.openid=m.openid \r\n        where " . $condition . "  ORDER BY del_time DESC limit " . ($pindex - 1) * $psize . "," . $psize . " ";
+			$list = pdo_fetchall($sql, $params);
+			$total = pdo_fetchcolumn("SELECT count(mch.id)  FROM   " . tablename("ewei_shop_member_card_history") . " mch LEFT JOIN   " . tablename("ewei_shop_member_card") . " mc on mch.member_card_id=mc.id where " . $condition . "  ORDER BY mc.del_time DESC limit " . ($pindex - 1) * $psize . "," . $psize . " ", $params);
+		} catch (\Throwable $th) {
+			//throw $th;
+		}
 		$pager = pagination2($total, $pindex, $psize);
 		include($this->template());
 	}

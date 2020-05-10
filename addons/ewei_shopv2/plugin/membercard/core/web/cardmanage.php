@@ -302,7 +302,12 @@ class Cardmanage_EweiShopV2Page extends PluginWebPage
 			show_json(0, "抱歉,会员卡不存在或者已经被删除");
 		}
 		pdo_update("ewei_shop_member_card", array( "isdelete" => 1, "del_time" => time() ), array( "id" => $id, "uniacid" => $_W["uniacid"] ));
-		pdo_update("ewei_shop_member_card_history", array( "isdelete" => 1, "del_time" => time() ), array( "member_card_id" => $id, "uniacid" => $_W["uniacid"] ));
+		try {
+			pdo_update("ewei_shop_member_card_history", array( "isdelete" => 1, "del_time" => time() ), array( "member_card_id" => $id, "uniacid" => $_W["uniacid"] ));
+
+		} catch (\Throwable $th) {
+			//throw $th;
+		}
 		plog("membercard.cardmanage.delete", "删除会员卡: " . $id . " 标题: " . $item["name"] . " ");
 		show_json(1);
 	}

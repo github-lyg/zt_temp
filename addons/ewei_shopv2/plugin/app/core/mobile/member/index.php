@@ -152,11 +152,19 @@ class Index_EweiShopV2Page extends AppMobilePage
 			$params = array( ":uniacid" => $_W["uniacid"], ":openid" => $_W["openid"] );
 			$now_time = TIMESTAMP;
 			$card_condition .= " and (expire_time=-1 or expire_time>" . $now_time . ")";
-			$card_history = pdo_fetch("SELECT * FROM " . tablename("ewei_shop_member_card_history") . " \r\n\t\t\t\tWHERE " . $card_condition . " limit 1", $params);
+			try {
+				$card_history = pdo_fetch("SELECT * FROM " . tablename("ewei_shop_member_card_history") . " \r\n\t\t\t\tWHERE " . $card_condition . " limit 1", $params);
+			} catch (\Throwable $th) {
+				//throw $th;
+			}
 			if( $card_history ) 
 			{
 				$hasmembercard = true;
-				$hasbuycardnum = pdo_fetchcolumn("SELECT COUNT(*) FROM " . tablename("ewei_shop_member_card_history") . " \r\n\t\t\t\tWHERE " . $card_condition . " limit 1", $params);
+				try {
+					$hasbuycardnum = pdo_fetchcolumn("SELECT COUNT(*) FROM " . tablename("ewei_shop_member_card_history") . " \r\n\t\t\t\tWHERE " . $card_condition . " limit 1", $params);
+				} catch (\Throwable $th) {
+					//throw $th;
+				}
 			}
 			$allcard_condition = " uniacid = :uniacid ";
 			$allcard_params = array( ":uniacid" => $_W["uniacid"] );

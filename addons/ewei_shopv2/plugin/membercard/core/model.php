@@ -131,7 +131,12 @@ class MembercardModel extends PluginModel
 			return array( "errno" => 2, "msg" => "缺少参数" );
 		}
 		$params = array( ":uniacid" => $_W["uniacid"], ":openid" => $openid, ":cardid" => $cardid );
-		$record = pdo_fetch("SELECT * FROM " . tablename("ewei_shop_member_card_history") . " \r\n\t\t\t\tWHERE openid =:openid and uniacid=:uniacid and member_card_id=:cardid and isdelete=0 ORDER BY receive_time DESC limit 1", $params);
+		try {
+			$record = pdo_fetch("SELECT * FROM " . tablename("ewei_shop_member_card_history") . " \r\n\t\t\t\tWHERE openid =:openid and uniacid=:uniacid and member_card_id=:cardid and isdelete=0 ORDER BY receive_time DESC limit 1", $params);
+
+		} catch (\Throwable $th) {
+			//throw $th;
+		}
 		if( !$record ) 
 		{
 			return array( "errno" => 1, "msg" => "未开通此会员卡" );
@@ -276,7 +281,12 @@ class MembercardModel extends PluginModel
 		}
 		$condition = "  h.uniacid=:uniacid and h.isdelete = :isdelete and h.openid = :openid and h.member_card_id=:cardid ";
 		$params = array( ":uniacid" => $_W["uniacid"], ":isdelete" => 0, ":openid" => $openid, ":cardid" => $cardid );
-		$card = pdo_fetch("SELECT c.*,h.receive_time,h.openid,h.expire_time,c.validate\r\n\t\t\t\tFROM " . tablename("ewei_shop_member_card_history") . " as h\r\n\t\t\t\tleft join " . tablename("ewei_shop_member_card") . " as c on c.id = h.member_card_id \r\n\t\t\t\tWHERE  " . $condition . "  ORDER BY h.receive_time DESC limit 1", $params);
+		try {
+			$card = pdo_fetch("SELECT c.*,h.receive_time,h.openid,h.expire_time,c.validate\r\n\t\t\t\tFROM " . tablename("ewei_shop_member_card_history") . " as h\r\n\t\t\t\tleft join " . tablename("ewei_shop_member_card") . " as c on c.id = h.member_card_id \r\n\t\t\t\tWHERE  " . $condition . "  ORDER BY h.receive_time DESC limit 1", $params);
+
+		} catch (\Throwable $th) {
+			//throw $th;
+		}
 		if( empty($card) ) 
 		{
 			return false;
@@ -668,20 +678,35 @@ class MembercardModel extends PluginModel
 	{
 		global $_W;
 		$time = time();
-		$card_history = pdo_fetch($sql = "SELECT * FROM  " . tablename("ewei_shop_member_card_history") . " where member_card_id=:cardid and uniacid=:uniacid and openid=:openid and isdelete=0 and (expire_time=-1 or expire_time >" . $time . ") limit 1", array( ":cardid" => $card_id, ":uniacid" => $_W["uniacid"], ":openid" => $_W["openid"] ));
+		try {
+			$card_history = pdo_fetch($sql = "SELECT * FROM  " . tablename("ewei_shop_member_card_history") . " where member_card_id=:cardid and uniacid=:uniacid and openid=:openid and isdelete=0 and (expire_time=-1 or expire_time >" . $time . ") limit 1", array( ":cardid" => $card_id, ":uniacid" => $_W["uniacid"], ":openid" => $_W["openid"] ));
+
+		} catch (\Throwable $th) {
+			//throw $th;
+		}
 		return $card_history;
 	}
 	public function getUserMembercardOrderHistory($card_id, $openid) 
 	{
 		global $_W;
 		$time = time();
-		$card_history = pdo_fetch($sql = "SELECT * FROM  " . tablename("ewei_shop_member_card_history") . " where member_card_id=:cardid and uniacid=:uniacid and openid=:openid and isdelete=0 and (expire_time=-1 or expire_time >" . $time . ") limit 1", array( ":cardid" => $card_id, ":uniacid" => $_W["uniacid"], ":openid" => $openid ));
+		try {
+			$card_history = pdo_fetch($sql = "SELECT * FROM  " . tablename("ewei_shop_member_card_history") . " where member_card_id=:cardid and uniacid=:uniacid and openid=:openid and isdelete=0 and (expire_time=-1 or expire_time >" . $time . ") limit 1", array( ":cardid" => $card_id, ":uniacid" => $_W["uniacid"], ":openid" => $openid ));
+
+		} catch (\Throwable $th) {
+			//throw $th;
+		}
 		return $card_history;
 	}
 	public function getExpireMembercard_order_history($card_id) 
 	{
 		global $_W;
-		$card_history = pdo_fetch("SELECT * FROM  " . tablename("ewei_shop_member_card_history") . " where member_card_id=:cardid and uniacid=:uniacid and openid=:openid and isdelete=0 and (expire_time=-1 or expire_time <" . time() . ")", array( ":uniacid" => $_W["uniacid"], ":cardid" => $card_id, ":openid" => $_W["openid"] ));
+		try {
+			$card_history = pdo_fetch("SELECT * FROM  " . tablename("ewei_shop_member_card_history") . " where member_card_id=:cardid and uniacid=:uniacid and openid=:openid and isdelete=0 and (expire_time=-1 or expire_time <" . time() . ")", array( ":uniacid" => $_W["uniacid"], ":cardid" => $card_id, ":openid" => $_W["openid"] ));
+
+		} catch (\Throwable $th) {
+			//throw $th;
+		}
 		return $card_history;
 	}
 	public function addMembercard($order_id) 
@@ -725,7 +750,11 @@ class MembercardModel extends PluginModel
 			if( $check["errno"] == 1 || $check["using"] == -1 ) 
 			{
 				$data = array( "uniacid" => $_W["uniacid"], "openid" => $order["openid"], "order_id" => $order["id"], "member_card_id" => $order["member_card_id"], "name" => $card_info["name"], "receive_time" => time(), "pay_type" => $pay_type, "expire_time" => $expire_time, "price" => $order["total"], "user_name" => $order["payment_name"], "telephone" => $order["telephone"] );
-				pdo_insert("ewei_shop_member_card_history", $data);
+				try {
+					pdo_insert("ewei_shop_member_card_history", $data);
+				} catch (\Throwable $th) {
+					//throw $th;
+				}
 				pdo_query("UPDATE " . tablename("ewei_shop_member_card") . " SET `sale_count` = `sale_count` + 1,`stock` = `stock` - 1 WHERE id=" . $order["member_card_id"] . "");
 			}
 			else 
@@ -738,7 +767,11 @@ class MembercardModel extends PluginModel
 					{
 						$expire_time = $card["expire_time"] + $card_info["validate"] * 3600 * 24 * 31;
 						$updata = array( "expire_time" => $expire_time + 1, "price" => $order["total"], "pay_type" => $pay_type, "order_id" => $order["id"], "user_name" => $order["payment_name"], "telephone" => $order["telephone"] );
+					try {
 						pdo_update("ewei_shop_member_card_history", $updata, array( "id" => $card["id"] ));
+					} catch (\Throwable $th) {
+						//throw $th;
+					}
 						pdo_query("UPDATE " . tablename("ewei_shop_member_card") . " SET `sale_count` = `sale_count` + 1,`stock` = `stock` - 1 WHERE id=" . $order["member_card_id"] . "");
 					}
 				}

@@ -39,7 +39,12 @@ class Index_EweiShopV2Page extends AppMobilePage
 			$params = array( ":uniacid" => $_W["uniacid"], ":openid" => $openid );
 			$now_time = TIMESTAMP;
 			$card_condition .= " and (expire_time=-1 or expire_time>" . $now_time . ")";
-			$my_total = pdo_fetchcolumn("SELECT COUNT(*) FROM " . tablename("ewei_shop_member_card_history") . " \r\n\t\t\t\tWHERE " . $card_condition . " limit 1", $params);
+			try {
+				$my_total = pdo_fetchcolumn("SELECT COUNT(*) FROM " . tablename("ewei_shop_member_card_history") . " \r\n\t\t\t\tWHERE " . $card_condition . " limit 1", $params);
+
+			} catch (\Throwable $th) {
+				//throw $th;
+			}
 			$all_total = $all["total"];
 		}
 		app_json(array( "list" => $list, "pagesize" => $psize, "total" => $total, "my_total" => $my_total, "all_total" => $all_total ));
