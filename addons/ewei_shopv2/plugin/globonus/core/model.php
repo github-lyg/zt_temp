@@ -40,13 +40,14 @@ if (!class_exists('GlobonusModel')) {
             return $levels;
         }
 
+        // 支付成功分红结算
         public function checkOrderFinish($orderId)
         {
             global $_W;
-
             $set = $this->getSet();
 
             //是否开启股东分红实时结算
+    
             if ($set['paytype'] == 3) {
                 $ordermoney = 0;
                 $bonusordermoney = 0;
@@ -82,7 +83,7 @@ if (!class_exists('GlobonusModel')) {
                         }
                         $orderBonusMoney < 0 && $orderBonusMoney = 0;
                     }
-
+                    // echo "<pre>"; print_r($orderBonusMoney); exit;
                     $ordermoney += $o['price'];
                     //分红金额计算
                     $bonusordermoney += $orderBonusMoney * $set['bonusrate'] / 100;
@@ -140,7 +141,7 @@ if (!class_exists('GlobonusModel')) {
                     }
                     //echo "<pre>";print_r($levelBonus);exit;
                 }
-//                echo "<pre>";print_r($levelBonus);exit;
+            //    echo "<pre>";print_r($levelBonus);exit;
 
                 foreach ($partners as &$p) {
                     $bonusmoney_send = 0;
@@ -164,7 +165,7 @@ if (!class_exists('GlobonusModel')) {
 //                    echo "<pre>";print_r($bonusmoney);
                 }
                 unset($p);
-//                echo "<pre>"; print_r($partners); exit;
+            //    echo "<pre>"; print_r($partners); exit;
 
                 if ($bonusordermoney < $bonusmoney) {
                     $rat = $bonusordermoney / $bonusmoney;
@@ -197,9 +198,10 @@ if (!class_exists('GlobonusModel')) {
                     'endtime'         => 0,
                     'old'             => false
                 );
-//                echo "<pre>"; print_r($data); exit;
+            //    echo "<pre>"; print_r($data); exit;
                 //前段修改的分红最终值，这里直接赋值
-                //$bonusmoney = $data['bonusordermoney'];
+                $bonusmoney = $data['bonusordermoney'];
+                // echo "<pre>"; print_r($bonusmoney); exit;
 
                 $bill = array(
                     'uniacid'         => $_W['uniacid'],
@@ -237,7 +239,7 @@ if (!class_exists('GlobonusModel')) {
                 }
 
                 $rate = $bonusmoney / $data['bonusmoney'];
-
+                // logg('1.json',$data['partners']);
                 foreach ($data['partners'] as $partner) {
                     $bp = array(
                         'uniacid'     => $_W['uniacid'],
@@ -261,7 +263,7 @@ if (!class_exists('GlobonusModel')) {
 
                 //自动结算
                 $partners = pdo_fetchall('select * from ' . tablename('ewei_shop_globonus_billp') . ' where billid=:billid and status=1 and uniacid=:uniacid', array(':uniacid' => $_W['uniacid'], ':billid' => $billid), 'id');
-
+                //   echo "<pre>"; print_r($partners); exit;
                 foreach ($partners as $partner) {
 
                     $pay = $partner['paymoney'];
@@ -286,6 +288,7 @@ if (!class_exists('GlobonusModel')) {
 
                         //应分红金额，大于0直接分红，小于0累加到会员冻结分红值
                         $payAmount = $memberPartnerBonus - abs($levelFetter);
+                        // logg('1.json',$memberPartnerBonus);
                         if ($payAmount > 0) {
                             if ($moneytype == 1) {
                                 $pay = $payAmount * 100;

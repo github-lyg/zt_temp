@@ -2371,6 +2371,8 @@ if( !class_exists("CommissionModel") )
                 }
             }
         } 
+        
+        // 计划任务分红结算
         public function checkOrderFinish($orderid = "")
         {
             global $_W;

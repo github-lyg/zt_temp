@@ -22,9 +22,11 @@ foreach( $sets as $set )
 		$cityexpress_receive = (0 < intval($cityexpress["receive_goods"]) ? intval($cityexpress["receive_goods"]) : 0);
 	}
 	$trade = m("common")->getSysset("trade", $_W["uniacid"]);
-	$days = intval($trade["receive"]);
+	$days = intval($trade["receive"]);//7
 	$p = p("commission");
 	$pcoupon = com("coupon");
+	// echo "<pre>"; print_r($cityexpress); exit;
+	// 查询待收货订单
 	$orders = pdo_fetchall("select id,couponid,openid,isparent,sendtime,price,merchid,isverify,addressid,isvirtualsend,`virtual`,dispatchtype,city_express_state from " . tablename("ewei_shop_order") . " where uniacid=" . $_W["uniacid"] . " and status=2", array( ), "id");
 	if( !empty($orders) ) 
 	{
@@ -34,6 +36,7 @@ foreach( $sets as $set )
 			{
 				$days = $cityexpress_receive;
 			}
+			// echo "<pre>"; print_r($order); exit;
 			$result = goodsReceive($order, $days);
 			if( !$result ) 
 			{
@@ -73,6 +76,7 @@ foreach( $sets as $set )
 		}
 	}
 }
+
 function goodsReceive($order, $sysday = 0) 
 {
 	$days = array( );

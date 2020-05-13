@@ -333,6 +333,7 @@ class Pay_EweiShopV2Page extends MobileLoginPage
 		}
 		show_json(0);
 	}
+	// 余额支付成功
 	public function complete() 
 	{
 		global $_W;
@@ -1082,6 +1083,7 @@ class Pay_EweiShopV2Page extends MobileLoginPage
 			}
 		}
 	}
+	// 余额支付成功回调函数
 	public function success() 
 	{
 		global $_W;
@@ -1239,6 +1241,9 @@ class Pay_EweiShopV2Page extends MobileLoginPage
 				$seckill_color = $diypage["seckill_color"];
 			}
 		}
+		// 调用分红函数
+		p("globonus")->checkOrderFinish($orderid);
+
 		include($this->template());
 	}
 	protected function str($str) 

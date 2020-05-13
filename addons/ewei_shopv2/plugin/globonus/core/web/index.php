@@ -74,8 +74,8 @@ class Index_EweiShopV2Page extends PluginWebPage
 
 	public function set()
 	{
-//		p("globonus")->checkOrderFinish(1);
-//		echo 321; exit;
+		// p("globonus")->checkOrderFinish(600);
+		// exit;
 		global $_W;
 		global $_GPC;
 

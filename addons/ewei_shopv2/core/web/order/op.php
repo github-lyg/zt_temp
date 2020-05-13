@@ -331,12 +331,14 @@ class Op_EweiShopV2Page extends WebPage
         if( p("dividend") )
         {
             p("dividend")->addDividendBonus($item["id"]);
-        }
+		}
+
 		//如果股东分红开启时时结算
         if( p("globonus") )
         {
             p("globonus")->checkOrderFinish($item["id"]);
-        }
+		}
+		
 		if( p("lottery") ) 
 		{
 			$res = p("lottery")->getLottery($item["openid"], 1, array( "money" => $item["price"], "paytype" => 2 ));

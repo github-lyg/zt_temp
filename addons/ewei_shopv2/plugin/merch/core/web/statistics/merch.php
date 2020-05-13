@@ -71,6 +71,7 @@ class Merch_EweiShopV2Page extends PluginWebPage
 		}
 
 		$total = pdo_fetchall('select u.id from ' . tablename('ewei_shop_merch_user') . ' u ' . ' left join ' . tablename('ewei_shop_order') . ' o on u.id=o.merchid' . (' where 1 ' . $condition . ' GROUP BY u.id'), $params);
+		
 		$total = count($total);
 		$pager = pagination2($total, $pindex, $psize);
 		$groups = $this->model->getGroups();

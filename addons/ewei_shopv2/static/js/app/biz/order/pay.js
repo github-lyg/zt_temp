@@ -1,4 +1,4 @@
-define(['core', 'tpl'], function(core, tpl) {
+define(['core', 'tpl'], function (core, tpl) {
     var modal = {
         params: {}
     };

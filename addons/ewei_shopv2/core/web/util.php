@@ -60,6 +60,7 @@ class Util_EweiShopV2Page extends WebPage
 		$express = trim($_GPC['express']);
 		$expresssn = trim($_GPC['expresssn']);
 		$expresssn = str_replace(' ', '', $expresssn);
+		// echo "<pre>"; print_r(time()); exit;
 		$list = m('util')->getExpressList($express, $expresssn);
 		include $this->template();
 	}
