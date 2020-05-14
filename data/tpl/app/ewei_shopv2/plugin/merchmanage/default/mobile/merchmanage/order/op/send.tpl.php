@@ -36,7 +36,7 @@
                     <select class="fui-input" id="express">
                         <option value="">其他快递</option>
                         <?php  if(is_array($express_list)) { foreach($express_list as $express_item) { ?>
-                            <option value="<?php  echo $express_item['express'];?>" <?php  if($item['express']==$express_item['express']) { ?>selected="selected"<?php  } ?>><?php  echo $express_item['name'];?></option>
+                            <option value="<?php  echo $express_item['code'];?>" <?php  if($item['express']==$express_item['express']) { ?>selected="selected"<?php  } ?>><?php  echo $express_item['name'];?></option>
                         <?php  } } ?>
                     </select>
                 </div>

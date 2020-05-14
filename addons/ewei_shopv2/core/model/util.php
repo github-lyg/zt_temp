@@ -1,60 +1,35 @@
-<?php
+<?php error_reporting(0);
+
 class Util_EweiShopV2Model
 {
     public function getExpressList($express, $expresssn)
     {
-        // $expresssn = "75348572499256";
-        // $express = "zhongtiekuaiyun";
         global $_W;
         $express_set = $_W['shopset']['express'];
         $express = $express == 'jymwl' ? 'jiayunmeiwuliu' : $express;
         $express = $express == 'TTKD' ? 'tiantian' : $express;
         $express = $express == 'jjwl' ? 'jiajiwuliu' : $express;
         $express = $express == 'zhongtiekuaiyun' ? 'ztky' : $express;
+        // echo "<pre>";print_r($express);exit;
         load()->func('communication');
 
-		  echo "<pre>"; print_r(!empty($express_set['isopen'])); exit;
-        if (!empty($express_set['isopen']) && !empty($express_set['apikey'])) {
-            if (!empty($express_set['cache']) && 0 < $express_set['cache']) {
-                $cache_time = $express_set['cache'] * 60;
-                $cache = pdo_fetch('SELECT * FROM' . tablename('ewei_shop_express_cache') . 'WHERE express=:express AND expresssn=:expresssn LIMIT 1', array('express' => $express, 'expresssn' => $expresssn));
-                if (time() <= $cache['lasttime'] + $cache_time && !empty($cache['datas'])) {
-                    return iunserializer($cache['datas']);
-                }
-            }
-
-            if ($express_set['isopen'] == 1) {
-                $url = 'http://api.kuaidi100.com/api?id=' . $express_set['apikey'] . '&com=' . $express . '&nu=' . $expresssn;
-                $params = array();
-            } else {
-                $url = 'http://poll.kuaidi100.com/poll/query.do';
-                $params = array('customer' => $express_set['customer'], 'param' => json_encode(array('com' => $express, 'num' => $expresssn)));
-                $params['sign'] = md5($params['param'] . $express_set['apikey'] . $params['customer']);
-                $params['sign'] = strtoupper($params['sign']);
-            }
-
-            $response = ihttp_post($url, $params);
-            $content = $response['content'];
-            $info = json_decode($content, true);
-        }
-
-
         if (!isset($info) || empty($info['data']) || !is_array($info['data'])) {
-            $url = 'https://www.kuaidi100.com/query?type=' . $express . '&postid=' . $expresssn . '&id=1&valicode=&temp=';
-        
-            $response = ihttp_request($url);
-            $content = $response['content'];
-            $info = json_decode($content, true);
+            $requestData= '"'."{'OrderCode':'','ShipperCode':"."'".$express."'".",'LogisticCode':"."'".$expresssn."'"."}".'"';
+            $requestData = substr($requestData, 1);
+            $requestData = substr($requestData, 0, -1);
+            $info=$this->getOrderTracesByJson($requestData);
+            $info = json_decode($info, true);
             $useapi = false;
-        // echo "<pre>"; print_r($response); exit;
+
+        //---------------------------------------------
         } else {
             $useapi = true;
         }
-
+        
         $list = array();
-        if (!empty($info['data']) && is_array($info['data'])) {
-            foreach ($info['data'] as $index => $data) {
-                $list[] = array('time' => trim($data['time']), 'step' => trim($data['context']));
+        if (!empty($info['Traces']) && is_array($info['Traces'])) {
+            foreach ($info['Traces'] as $index => $data) {
+                $list[] = array('time' => trim($data['AcceptTime']), 'step' => trim($data['AcceptStation']));
             }
         }
 
@@ -65,7 +40,8 @@ class Util_EweiShopV2Model
                 pdo_update('ewei_shop_express_cache', array('lasttime' => time(), 'datas' => iserializer($list)), array('id' => $cache['id']));
             }
         }
-
+        $list = array_reverse($list);
+        
         return $list;
     }
 
@@ -244,6 +220,95 @@ class Util_EweiShopV2Model
         $contents = file_get_contents($url);
         $data = json_decode($contents, true);
         return $data;
+    }
+
+    public function array_to_object($arr)
+    {
+        if (gettype($arr) != 'array') {
+            return;
+        }
+        foreach ($arr as $k => $v) {
+            if (gettype($v) == 'array' || getType($v) == 'object') {
+                $arr[$k] = (object)array_to_object($v);
+            }
+        }
+     
+        return (object)$arr;
+    }
+
+    /**
+     * 快递签名
+     */
+
+    /**
+ * Json方式 查询订单物流轨迹
+ */
+    public function getOrderTracesByJson($requestData)
+    {
+        $EBusinessID = "1641756";
+        $AppKey = "4f322f37-b060-4a13-83e0-df80676debae";
+        $ReqURL = "http://api.kdniao.com/Ebusiness/EbusinessOrderHandle.aspx";
+
+        $datas = array(
+        'EBusinessID' => $EBusinessID,
+        'RequestType' => '1002',
+        'RequestData' => urlencode($requestData) ,
+        'DataType' => '2',
+    );
+
+        $datas['DataSign'] = $this->encrypt($requestData, $AppKey);
+        $result=$this->sendPost($ReqURL, $datas);
+        return $result;
+    }
+ 
+    /**
+     *  post提交数据
+     * @param  string $url 请求Url
+     * @param  array $datas 提交的数据
+     * @return url响应返回的html
+     */
+    public function sendPost($url, $datas)
+    {
+        $temps = array();
+        foreach ($datas as $key => $value) {
+            $temps[] = sprintf('%s=%s', $key, $value);
+        }
+        $post_data = implode('&', $temps);
+        $url_info = parse_url($url);
+        if (empty($url_info['port'])) {
+            $url_info['port']=80;
+        }
+        $httpheader = "POST " . $url_info['path'] . " HTTP/1.0\r\n";
+        $httpheader.= "Host:" . $url_info['host'] . "\r\n";
+        $httpheader.= "Content-Type:application/x-www-form-urlencoded\r\n";
+        $httpheader.= "Content-Length:" . strlen($post_data) . "\r\n";
+        $httpheader.= "Connection:close\r\n\r\n";
+        $httpheader.= $post_data;
+        $fd = fsockopen($url_info['host'], $url_info['port']);
+        fwrite($fd, $httpheader);
+        $gets = "";
+        $headerFlag = true;
+        while (!feof($fd)) {
+            if (($header = @fgets($fd)) && ($header == "\r\n" || $header == "\n")) {
+                break;
+            }
+        }
+        while (!feof($fd)) {
+            $gets.= fread($fd, 128);
+        }
+        fclose($fd);
+        return $gets;
+    }
+
+    /**
+     * 电商Sign签名生成
+     * @param data 内容
+     * @param appkey Appkey
+     * @return DataSign签名
+     */
+    public function encrypt($data, $appkey)
+    {
+        return urlencode(base64_encode(md5($data.$appkey)));
     }
 }
 

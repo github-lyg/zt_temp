@@ -199,7 +199,7 @@
                 <div class="fui-cell-group ">
                     <div class="fui-cell">
                         <div class="fui-cell-info"><i class="icon icon-location"></i> 发货信息</div>
-                        <a class="fui-cell-remark" data-nocache="true" href="{php echo mobileUrl('merchmanage/order/express')}">查看物流</a>
+                        <a class="fui-cell-remark" data-nocache="true" href="{php echo mobileUrl('merchmanage/order/express', array('express'=>$item['express'], 'expresssn'=>$item['expresssn']))}">查看物流</a>
                     </div>
                     <div class="fui-cell">
                         <div class="fui-cell-label">快递公司: </div>

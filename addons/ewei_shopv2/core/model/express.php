@@ -6,10 +6,21 @@ class Express_EweiShopV2Model
      */
 	public function getExpressList()
 	{
+		// global $_W;
+		// $sql = 'select * from ' . tablename('ewei_shop_express') . ' where status=1 order by displayorder desc,id asc';
+		// $data = pdo_fetchall($sql);
+		// return $data;
+
+
+		//---------------
+		// 修改查询新表
 		global $_W;
-		$sql = 'select * from ' . tablename('ewei_shop_express') . ' where status=1 order by displayorder desc,id asc';
+		$sql = 'select * from ' . tablename('ewei_shop_exhelper_esheet');
 		$data = pdo_fetchall($sql);
 		return $data;
+
+		
+		//---------------
 	}
 }
 

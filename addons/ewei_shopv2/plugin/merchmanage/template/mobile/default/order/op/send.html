@@ -36,7 +36,7 @@
                     <select class="fui-input" id="express">
                         <option value="">其他快递</option>
                         {loop $express_list $express_item}
-                            <option value="{$express_item['express']}" {if $item['express']==$express_item['express']}selected="selected"{/if}>{$express_item['name']}</option>
+                            <option value="{$express_item['code']}" {if $item['express']==$express_item['express']}selected="selected"{/if}>{$express_item['name']}</option>
                         {/loop}
                     </select>
                 </div>
