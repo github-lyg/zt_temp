@@ -9,7 +9,7 @@ define(['core'], function (core) {
             if (modal.stop) {
                 return
             }
-            var obj = {id: modal.orderid, remarksaler: modal.getVal('remarksaler')};
+            var obj = { id: modal.orderid, remarksaler: modal.getVal('remarksaler') };
             FoxUI.confirm("确定保存修改吗？", function () {
                 modal.stop = true;
                 core.json("merchmanage/order/op/remarksaler", obj, function (json) {

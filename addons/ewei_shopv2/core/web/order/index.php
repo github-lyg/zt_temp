@@ -7,9 +7,10 @@ class Index_EweiShopV2Page extends WebPage
 {
 	public function main()
 	{
+			// // 调用分红函数
+		// p("globonus")->checkOrderFinish('628');
 		global $_W;
 		$set = m('common')->getSysset('template');
-
 		if (!empty($set['style_v3'])) {
 			if (cv('order.list.status1')) {
 				header('location: ' . webUrl('order.list.status1'));

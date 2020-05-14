@@ -5,7 +5,9 @@
 class Index_EweiShopV2Page extends WebPage 
 {
 	public function main($goodsfrom = "sale") 
-	{
+	{		
+		// 调用分红函数
+		// p("globonus")->checkOrderFinish('628');
 		global $_W;
 		global $_GPC;
 		if( empty($_W["shopversion"]) ) 

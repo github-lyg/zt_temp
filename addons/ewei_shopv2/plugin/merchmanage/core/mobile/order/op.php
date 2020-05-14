@@ -37,6 +37,7 @@ class Op_EweiShopV2Page extends MerchmanageMobilePage
 		}
 	}
 
+	// 保存修改
 	public function remarksaler()
 	{
 		global $_W;
@@ -164,8 +165,6 @@ class Op_EweiShopV2Page extends MerchmanageMobilePage
 		global $_W;
 		global $_GPC;
 
-		
-
 		$orderid = intval($_GPC['id']);
 
 		if (empty($orderid)) {
@@ -174,7 +173,6 @@ class Op_EweiShopV2Page extends MerchmanageMobilePage
 
 
 		$item = $this->getOrder($orderid);
-
 		if (empty($item['addressid'])) {
 			$this->show('无收货地址，无法发货');
 		}
@@ -186,7 +184,6 @@ class Op_EweiShopV2Page extends MerchmanageMobilePage
 			}
 
 		}
-
 
 		if ($_W['ispost']) {
 			$expresssn = trim($_GPC['expresssn']);
@@ -277,11 +274,9 @@ class Op_EweiShopV2Page extends MerchmanageMobilePage
 
 		$order_goods = pdo_fetchall('select g.id,g.title,g.thumb,og.sendtype,g.ispresell,og.optionname,og.total from ' . tablename('ewei_shop_order_goods') . ' og ' . ' left join ' . tablename('ewei_shop_goods') . ' g on g.id=og.goodsid ' . ' where og.uniacid=:uniacid and og.orderid=:orderid ', array(':uniacid' => $_W['uniacid'], ':orderid' => $item['id']));
 		$address = iunserializer($item['address']);
-
 		if (!(is_array($address))) {
 			$address = pdo_fetch('SELECT * FROM ' . tablename('ewei_shop_member_address') . ' WHERE id = :id and uniacid=:uniacid', array(':id' => $item['addressid'], ':uniacid' => $_W['uniacid']));
 		}
-
 
 		$express_list = m('express')->getExpressList();
 		include $this->template();

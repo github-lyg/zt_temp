@@ -997,6 +997,7 @@ class Index_EweiShopV2Page extends MerchmanageMobilePage
 	{
 		global $_W;
 		global $_GPC;
+		// echo "<pre>";print_r($_GPC);exit;
 		$express = trim($_GPC['express']);
 		$expresssn = trim($_GPC['expresssn']);
 		$list = m('util')->getExpressList($express, $expresssn);
