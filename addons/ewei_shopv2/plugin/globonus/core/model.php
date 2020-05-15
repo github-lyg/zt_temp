@@ -117,92 +117,90 @@ if (!class_exists('GlobonusModel')) {
                     //  print_r($six);
                     //  print_r($seven);
                     //   exit;
-
-                    foreach ($partners as  $p) {
+                    // 应该分的利润
+                    $price = $orderBonusMoney * $set['bonusrate'] / 100;
+                    foreach ($partners as  $key=>$p) {
                         // 是否允许内购
                         if (empty($set['selfbuy'])) {
                             if ($p['openid'] == $o['openid']) {
                                 continue;
                             }
                         }
-                        // 应该分的利润
-                        $price = $orderBonusMoney * $set['bonusrate'] / 100;
                         !isset($p['bonusmoney']) && $p['bonusmoney'] = 0;
                         // 店长分红
                         if ($p['partnerlevel'] == '0') {
-                            $zerro++;
-                            $p['bonusmoney'] += floatval($price * $p['bonus'] / (count($partners)));
+                            $p['bonusmoney'] += floatval($price * $p['bonus'] /100/ (count($partners)));
                         }
                         // 经理分红
                         if ($p['partnerlevel'] == '6') {
-                            $six++;
-                            $p['bonusmoney'] += floatval($price * $p['bonus'] / (count($partners)-$zerro));
+                            $p['bonusmoney'] += floatval($price * $p['bonus'] /100/ (count($partners)-$zerro));
                         }
                         // 总经理分红
                         if ($p['partnerlevel'] == '5') {
-                            $six++;
-                            $p['bonusmoney'] += floatval($price * $p['bonus'] / (count($partners)-$zerro-$six));
+                            $p['bonusmoney'] += floatval($price * $p['bonus'] /100/ (count($partners)-$zerro-$six-$five));
                         }
-                        // 经理分红
+                        // 高级经理分红
                         if ($p['partnerlevel'] == '7') {
-                            $six++;
-                            $p['bonusmoney'] += floatval($price * $p['bonus'] / (count($partners)-$zerro-$six-$five));
+                            $p['bonusmoney'] += floatval($price * $p['bonus'] /100/ (count($partners)-$zerro-$six));
                         }
+                        $partners[$key]['bonusmoney'] = $p['bonusmoney'];
                     }
-                    echo "<pre>";
-                    print_r($partners);
-                    exit;
-                    // unset($p);
-                    // unset($orderBonusMoney);
+                    // echo "<pre>";print_r($partners);exit;
+
+                    unset($p);
+                    unset($ewei_shop_member);
                 }
-//                echo "<pre>"; print_r($partners); exit;
+                //    echo "<pre>"; print_r($set['levelBonus']); exit;
 
                 //增加是否开启等级比例分红
-                $levelBonus = [];
-                if ($set['levelBonus'] == 1) {
-                    $partnerLevels = pdo_fetchall('select * from ' . tablename('ewei_shop_globonus_level') . (' where uniacid=:uniacid ORDER BY hierarchy desc'), array(':uniacid' => $_W['uniacid']));
-                    //股东等级人数
-                    $countNum = 0;
-                    foreach ($partnerLevels as $key => $partnerLevel) {
-                        $num = pdo_fetchcolumn('select count(id) from' . tablename('ewei_shop_member') . (' where uniacid=' . $_W['uniacid'] . ' and ispartner = 1 and partnerstatus = 1 and partnerlevel=' . $partnerLevel['id'])) ?: 0;
-                        $countNum += $num;
-                        $levelBonus[$partnerLevel['id']] = [
-                            'num'       => $num,
-                            'bonusNum'  => $countNum,
-                            'bonusRate' => $partnerLevel['bonus']
-                        ];
-                    }
-                    $partnerCount = pdo_fetchcolumn('select count(id) from' . tablename('ewei_shop_member') . (' where uniacid=' . $_W['uniacid'] . ' and ispartner = 1 and partnerstatus = 1')) ?: 0;
-                    $levelBonus[0] = [
-                        'num'       => $partnerCount,
-                        'bonusNum'  => $partnerCount,
-                        'bonusRate' => $set['bonus']
-                    ];
+                // $levelBonus = [];
+                // if ($set['levelBonus'] == 1) {
+                //     $partnerLevels = pdo_fetchall('select * from ' . tablename('ewei_shop_globonus_level') . (' where uniacid=:uniacid ORDER BY hierarchy desc'), array(':uniacid' => $_W['uniacid']));
+                //     // echo "<pre>"; print_r($partnerLevels); exit;
+                //     //股东等级人数
+                //     $countNum = 0;
+                //     foreach ($partnerLevels as $key => $partnerLevel) {
+                //         $num = pdo_fetchcolumn('select count(id) from' . tablename('ewei_shop_member') . (' where uniacid=' . $_W['uniacid'] . ' and ispartner = 1 and partnerstatus = 1 and partnerlevel=' . $partnerLevel['id'])) ?: 0;
+                //         $countNum += $num;
+                //         $levelBonus[$partnerLevel['id']] = [
+                //             'num'       => $num,
+                //             'bonusNum'  => $countNum,
+                //             'bonusRate' => $partnerLevel['bonus']
+                //         ];
+                //     }
+                  
+                //     $partnerCount = pdo_fetchcolumn('select count(id) from' . tablename('ewei_shop_member') . (' where uniacid=' . $_W['uniacid'] . ' and ispartner = 1 and partnerstatus = 1')) ?: 0;
+                //     // echo "<pre>"; print_r($partnerCount); exit;
+                //     $levelBonus[0] = [
+                //         'num'       => $partnerCount,
+                //         'bonusNum'  => $partnerCount,
+                //         'bonusRate' => $set['bonus']
+                //     ];
 
-                    rsort($levelBonus);
+                //     rsort($levelBonus);
 
-                    $bonusMoney = 0;
-                    foreach ($levelBonus as $key => &$bonus) {
-                        $money = round($bonusordermoney * $bonus['bonusRate'] / 100 / $bonus['bonusNum'], 2);
+                //     $bonusMoney = 0;
+                //     foreach ($levelBonus as $key => &$bonus) {
+                //         $money = round($bonusordermoney * $bonus['bonusRate'] / 100 / $bonus['bonusNum'], 2);
 
-                        $bonusMoney += $money;
+                //         $bonusMoney += $money;
 
-                        //等级应分红份额
-                        $bonus['bonusMoney'] = $bonusMoney;
-                    }
-                    //echo "<pre>";print_r($levelBonus);exit;
-                }
+                //         //等级应分红份额
+                //         $bonus['bonusMoney'] = $bonusMoney;
+                //     }
+                //     // echo "<pre>";print_r($bonus);exit;
+                // }
                 //    echo "<pre>";print_r($levelBonus);exit;
-
+                // echo "<pre>";print_r($partners);exit;
                 foreach ($partners as &$p) {
                     $bonusmoney_send = 0;
                     $p['charge'] = 0;
                     $p['chargemoney'] = 0;
                     //开启等级比例分红
-                    if ($set['levelBonus'] == 1) {
-                        $p['bonusmoney'] = $levelBonus[$p['partnerlevel']]['bonusMoney'];
-                    }
-//                    echo "<pre>";print_r($p);
+                    // if ($set['levelBonus'] == 1) {
+                    //     $p['bonusmoney'] = $levelBonus[$p['partnerlevel']]['bonusMoney'];
+                    // }
+
                     if (floatval($set['paycharge']) <= 0 || floatval($set['paybegin']) <= $p['bonusmoney'] && $p['bonusmoney'] <= floatval($set['payend'])) {
                         $bonusmoney_send += round($p['bonusmoney'], 2);
                     } else {
@@ -212,11 +210,14 @@ if (!class_exists('GlobonusModel')) {
                     }
 
                     $p['bonusmoney_send'] = $bonusmoney_send;
+                    // 分红总数
                     $bonusmoney += $bonusmoney_send;
 //                    echo "<pre>";print_r($bonusmoney);
                 }
+                
                 unset($p);
-                //    echo "<pre>"; print_r($partners); exit;
+                // echo "<pre>"; print_r($partners); exit;
+                // echo "<pre>"; print_r($bonusordermoney); exit;
 
                 if ($bonusordermoney < $bonusmoney) {
                     $rat = $bonusordermoney / $bonusmoney;
@@ -248,10 +249,10 @@ if (!class_exists('GlobonusModel')) {
                     'endtime'         => 0,
                     'old'             => false
                 );
-                //    echo "<pre>"; print_r($data); exit;
+                // echo "<pre>"; print_r($data); exit;
                 //前段修改的分红最终值，这里直接赋值
                 $bonusmoney = $data['bonusordermoney'];
-                // echo "<pre>"; print_r($bonusmoney); exit;
+                // echo "<pre>"; print_r($data['orders']); exit;
 
                 $bill = array(
                     'uniacid'         => $_W['uniacid'],
@@ -276,8 +277,8 @@ if (!class_exists('GlobonusModel')) {
                 );
 
                 pdo_insert('ewei_shop_globonus_bill', $bill);
-
                 $billid = pdo_insertid();
+               
                 foreach ($data['orders'] as $order) {
                     $bo = array(
                         'uniacid'    => $_W['uniacid'],
@@ -286,9 +287,16 @@ if (!class_exists('GlobonusModel')) {
                         'ordermoney' => $order['price']
                     );
                     pdo_insert('ewei_shop_globonus_billo', $bo);
+                    $inserID = pdo_insertid();
+                    if ($inserID) {
+                        pdo_update('ewei_shop_order', array('isglobonus' => '1'), array('id' => $order['id']));
+                    }
+                    // echo "<pre>"; print_r($order['id']); exit;
                 }
+                
+                // $rate = $bonusmoney / $data['bonusmoney'];
 
-                $rate = $bonusmoney / $data['bonusmoney'];
+                // echo "<pre>"; print_r($rate); exit;
                 // logg('1.json',$data['partners']);
                 foreach ($data['partners'] as $partner) {
                     $bp = array(
@@ -313,7 +321,7 @@ if (!class_exists('GlobonusModel')) {
 
                 //自动结算
                 $partners = pdo_fetchall('select * from ' . tablename('ewei_shop_globonus_billp') . ' where billid=:billid and status=1 and uniacid=:uniacid', array(':uniacid' => $_W['uniacid'], ':billid' => $billid), 'id');
-                //   echo "<pre>"; print_r($partners); exit;
+                //   echo "<pre>"; print_r($billid); exit;
                 foreach ($partners as $partner) {
                     $pay = $partner['paymoney'];
                     $moneytype = intval($set['moneytype']);

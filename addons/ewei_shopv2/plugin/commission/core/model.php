@@ -2373,247 +2373,585 @@ if( !class_exists("CommissionModel") )
         } 
         
         // 计划任务分红结算
-        public function checkOrderFinish($orderid = "")
+        // public function checkOrderFinish($orderid = "")
+        // {
+        //     global $_W;
+        //     global $_GPC;
+        //     if( empty($orderid) )
+        //     {
+        //         return NULL;
+        //     }
+        //     $order = pdo_fetch("select id,openid, ordersn,goodsprice,agentid,finishtime from " . tablename("ewei_shop_order") . " where id=:id and status>=3 and uniacid=:uniacid limit 1", array( ":id" => $orderid, ":uniacid" => $_W["uniacid"] ));
+        //     if( empty($order) )
+        //     {
+        //         return NULL;
+        //     }
+        //     $set = $this->getSet();
+        //     if( empty($set["level"]) )
+        //     {
+        //         return NULL;
+        //     }
+        //     $openid = $order["openid"];
+        //     $member = m("member")->getMember($openid);
+        //     if( empty($member) )
+        //     {
+        //         return NULL;
+        //     }
+        //     $this->orderFinishTask($order, ($set["selfbuy"] ? true : false), $member);
+        //     $time = time();
+        //     $become_check = intval($set["become_check"]);
+        //     $isagent = $member["isagent"] == 1 && $member["status"] == 1;
+        //     $parentisagent = true;
+        //     if( !empty($member["agentid"]) )
+        //     {
+        //         $parent = m("member")->getMember($member["agentid"]);
+        //         if( empty($parent) || $parent["isagent"] != 1 || $parent["status"] != 1 )
+        //         {
+        //             $parentisagent = false;
+        //         }
+        //     }
+        //     if( !$isagent && $set["become_order"] == "1" )
+        //     {
+        //         if( $set["become"] == "4" && !empty($set["become_goodsid"]) )
+        //         {
+        //             $order_goods = pdo_fetchall("select goodsid from " . tablename("ewei_shop_order_goods") . " where orderid=:orderid and uniacid=:uniacid  ", array( ":uniacid" => $_W["uniacid"], ":orderid" => $order["id"] ), "goodsid");
+        //             if( in_array($set["become_goodsid"], array_keys($order_goods)) && empty($member["agentblack"]) )
+        //             {
+        //                 pdo_update("ewei_shop_member", array( "status" => $become_check, "isagent" => 1, "agenttime" => ($become_check == 1 ? $time : 0) ), array( "uniacid" => $_W["uniacid"], "id" => $member["id"] ));
+        //                 if( $become_check == 1 )
+        //                 {
+        //                     $this->sendMessage($openid, array( "nickname" => $member["nickname"], "agenttime" => $time ), TM_COMMISSION_BECOME);
+        //                     if( $parentisagent )
+        //                     {
+        //                         $this->upgradeLevelByAgent($parent["id"]);
+        //                         if( p("globonus") )
+        //                         {
+        //                             p("globonus")->upgradeLevelByAgent($parent["id"]);
+        //                         }
+        //                         if( p("abonus") )
+        //                         {
+        //                             p("abonus")->upgradeLevelByAgent($parent["id"]);
+        //                         }
+        //                         if( p("author") )
+        //                         {
+        //                             p("author")->upgradeLevelByAgent($parent["id"]);
+        //                         }
+        //                     }
+        //                 }
+        //             }
+        //         }
+        //         else
+        //         {
+        //             if( $set["become"] == 2 || $set["become"] == 3 )
+        //             {
+        //                 $can = false;
+        //                 if( $set["become"] == "2" )
+        //                 {
+        //                     $ordercount = pdo_fetchcolumn("select count(*) from " . tablename("ewei_shop_order") . " where openid=:openid and status>=3 and uniacid=:uniacid limit 1", array( ":uniacid" => $_W["uniacid"], ":openid" => $openid ));
+        //                     $can = intval($set["become_ordercount"]) <= $ordercount;
+        //                 }
+        //                 else
+        //                 {
+        //                     if( $set["become"] == "3" )
+        //                     {
+        //                         $moneycount = pdo_fetchcolumn("select sum(goodsprice) from " . tablename("ewei_shop_order") . " where openid=:openid and status>=3 and uniacid=:uniacid limit 1", array( ":uniacid" => $_W["uniacid"], ":openid" => $openid ));
+        //                         $can = floatval($set["become_moneycount"]) <= $moneycount;
+        //                     }
+        //                 }
+        //                 if( $can && empty($member["agentblack"]) )
+        //                 {
+        //                     pdo_update("ewei_shop_member", array( "status" => $become_check, "isagent" => 1, "agenttime" => $time ), array( "uniacid" => $_W["uniacid"], "id" => $member["id"] ));
+        //                     if( $become_check == 1 )
+        //                     {
+        //                         $this->sendMessage($member["openid"], array( "nickname" => $member["nickname"], "agenttime" => $time ), TM_COMMISSION_BECOME);
+        //                     }
+        //                 }
+        //             }
+        //         }
+        //     }
+        //     if( !empty($member["agentid"]) )
+        //     {
+        //         $parent = m("member")->getMember($member["agentid"]);
+        //         if( !empty($parent) && $parent["isagent"] == 1 && $parent["status"] == 1 )
+        //         {
+        //             $order_goods = pdo_fetchall("select g.id,g.title,og.total,og.realprice,og.price,og.optionname as optiontitle,g.noticeopenid,g.noticetype,og.commission1,og.commissions from " . tablename("ewei_shop_order_goods") . " og " . " left join " . tablename("ewei_shop_goods") . " g on g.id=og.goodsid " . " where og.uniacid=:uniacid and og.orderid=:orderid ", array( ":uniacid" => $_W["uniacid"], ":orderid" => $order["id"] ));
+        //             $goods = "";
+        //             $commission_total1 = 0;
+        //             $commission_total2 = 0;
+        //             $commission_total3 = 0;
+        //             $pricetotal = 0;
+        //             foreach( $order_goods as $og )
+        //             {
+        //                 $goods .= "" . $og["title"] . "( ";
+        //                 if( !empty($og["optiontitle"]) )
+        //                 {
+        //                     $goods .= " 规格: " . $og["optiontitle"];
+        //                 }
+        //                 $goods .= " 单价: " . $og["realprice"] / $og["total"] . " 数量: " . $og["total"] . " 总价: " . $og["realprice"] . "); ";
+        //                 $commissions = iunserializer($og["commissions"]);
+        //                 $commission_total1 += (isset($commissions["level1"]) ? floatval($commissions["level1"]) : 0);
+        //                 $commission_total2 += (isset($commissions["level2"]) ? floatval($commissions["level2"]) : 0);
+        //                 $commission_total3 += (isset($commissions["level3"]) ? floatval($commissions["level3"]) : 0);
+        //                 $pricetotal += $og["realprice"];
+        //             }
+        //             if( $order["agentid"] == $member["id"] )
+        //             {
+        //                 $this->sendMessage($member["openid"], array( "nickname" => $member["nickname"], "ordersn" => $order["ordersn"], "orderopenid" => $order["openid"], "price" => $pricetotal, "goods" => $goods, "commission1" => $commission_total1, "commission2" => $commission_total2, "commission3" => $commission_total3, "finishtime" => $order["finishtime"] ), TM_COMMISSION_ORDER_FINISH);
+        //             }
+        //             else
+        //             {
+        //                 if( $order["agentid"] == $parent["id"] )
+        //                 {
+        //                     $this->sendMessage($parent["openid"], array( "nickname" => $member["nickname"], "ordersn" => $order["ordersn"], "orderopenid" => $order["openid"], "price" => $pricetotal, "goods" => $goods, "commission1" => $commission_total1, "commission2" => $commission_total2, "commission3" => $commission_total3, "finishtime" => $order["finishtime"] ), TM_COMMISSION_ORDER_FINISH);
+        //                 }
+        //             }
+        //         }
+        //     }
+        //     $this->upgradeLevelByOrder($openid);
+        //     if( $isagent )
+        //     {
+        //         $plugin_author = p("author");
+        //         if( $plugin_author )
+        //         {
+        //             $set = $plugin_author->getSet();
+        //             if( !empty($set["open"]) )
+        //             {
+        //                 $isauthor = $member["isauthor"] && $member["authorstatus"];
+        //                 if( $isauthor )
+        //                 {
+        //                     $plugin_author->upgradeLevelByOrder($openid);
+        //                 }
+        //                 else
+        //                 {
+        //                     $become_check = intval($set["become_check"]);
+        //                     if( $set["become_order"] == "1" )
+        //                     {
+        //                         $info = $this->getInfo($member["id"], array( "ordercount3", "ordermoney3", "order13money", "order13" ));
+        //                         $can = false;
+        //                         if( $set["become"] == "3" )
+        //                         {
+        //                             $can = floatval($set["become_moneycount"]) <= floatval($info["ordermoney3"]);
+        //                         }
+        //                         else
+        //                         {
+        //                             if( $set["become"] == "4" )
+        //                             {
+        //                                 $moneycount = pdo_fetchcolumn("select sum(goodsprice) from " . tablename("ewei_shop_order") . " where openid=:openid and status>=3 and uniacid=:uniacid limit 1", array( ":uniacid" => $_W["uniacid"], ":openid" => $openid ));
+        //                                 $can = floatval($set["become_selfmoneycount"]) <= floatval($moneycount);
+        //                             }
+        //                         }
+        //                         if( $can && empty($member["authorblack"]) )
+        //                         {
+        //                             pdo_update("ewei_shop_member", array( "authorstatus" => $become_check, "isauthor" => 1, "authortime" => $time ), array( "uniacid" => $_W["uniacid"], "id" => $member["id"] ));
+        //                             if( $become_check == 1 )
+        //                             {
+        //                                 $plugin_author->sendMessage($member["openid"], array( "nickname" => $member["nickname"], "authortime" => $time ), TM_AUTHOR_BECOME);
+        //                             }
+        //                         }
+        //                     }
+        //                 }
+        //             }
+        //         }
+        //         $plugin_globonus = p("globonus");
+        //         if( !$plugin_globonus )
+        //         {
+        //             return NULL;
+        //         }
+        //         $set = $plugin_globonus->getSet();
+        //         if( empty($set["open"]) )
+        //         {
+        //             return NULL;
+        //         }
+        //         $ispartner = $member["ispartner"] && $member["partnerstatus"];
+        //         if( $ispartner )
+        //         {
+        //             $plugin_globonus->upgradeLevelByOrder($openid);
+        //             return NULL;
+        //         }
+        //         $become_check = intval($set["become_check"]);
+        //         if( $set["become_order"] == "1" )
+        //         {
+        //             if( $set["become"] == "4" && !empty($set["become_goodsid"]) )
+        //             {
+        //                 $order_goods = pdo_fetchall("select goodsid from " . tablename("ewei_shop_order_goods") . " where orderid=:orderid and uniacid=:uniacid  ", array( ":uniacid" => $_W["uniacid"], ":orderid" => $order["id"] ), "goodsid");
+        //                 if( in_array($set["become_goodsid"], array_keys($order_goods)) && empty($member["partnerblack"]) )
+        //                 {
+        //                     pdo_update("ewei_shop_member", array( "partnerstatus" => $become_check, "ispartner" => 1, "partnertime" => ($become_check == 1 ? $time : 0) ), array( "uniacid" => $_W["uniacid"], "id" => $member["id"] ));
+        //                     if( $become_check == 1 )
+        //                     {
+        //                         $plugin_globonus->sendMessage($openid, array( "nickname" => $member["nickname"], "partnertime" => $time ), TM_GLOBONUS_BECOME);
+        //                     }
+        //                 }
+        //             }
+        //             else
+        //             {
+        //                 if( $set["become"] == 2 || $set["become"] == 3 )
+        //                 {
+        //                     $can = false;
+        //                     if( $set["become"] == "2" )
+        //                     {
+        //                         $ordercount = pdo_fetchcolumn("select count(*) from " . tablename("ewei_shop_order") . " where openid=:openid and status>=3 and uniacid=:uniacid limit 1", array( ":uniacid" => $_W["uniacid"], ":openid" => $openid ));
+        //                         $can = intval($set["become_ordercount"]) <= $ordercount;
+        //                     }
+        //                     else
+        //                     {
+        //                         if( $set["become"] == "3" )
+        //                         {
+        //                             $moneycount = pdo_fetchcolumn("select sum(goodsprice) from " . tablename("ewei_shop_order") . " where openid=:openid and status>=3 and uniacid=:uniacid limit 1", array( ":uniacid" => $_W["uniacid"], ":openid" => $openid ));
+        //                             $can = floatval($set["become_moneycount"]) <= $moneycount;
+        //                         }
+        //                     }
+        //                     if( $can && empty($member["partnerblack"]) )
+        //                     {
+        //                         pdo_update("ewei_shop_member", array( "partnerstatus" => $become_check, "ispartner" => 1, "partnertime" => $time ), array( "uniacid" => $_W["uniacid"], "id" => $member["id"] ));
+        //                         if( $become_check == 1 )
+        //                         {
+        //                             $plugin_globonus->sendMessage($member["openid"], array( "nickname" => $member["nickname"], "partnertime" => $time ), TM_GLOBONUS_BECOME);
+        //                         }
+        //                     }
+        //                 }
+        //             }
+        //         }
+        //     }
+        // }  
+
+
+        // 新结算
+        // 支付成功分红结算
+        public function checkOrderFinish($orderId)
         {
             global $_W;
-            global $_GPC;
-            if( empty($orderid) )
-            {
-                return NULL;
-            }
-            $order = pdo_fetch("select id,openid, ordersn,goodsprice,agentid,finishtime from " . tablename("ewei_shop_order") . " where id=:id and status>=3 and uniacid=:uniacid limit 1", array( ":id" => $orderid, ":uniacid" => $_W["uniacid"] ));
-            if( empty($order) )
-            {
-                return NULL;
-            }
             $set = $this->getSet();
-            if( empty($set["level"]) )
-            {
-                return NULL;
+
+            //是否开启股东分红实时结算
+            // echo "<pre>"; print_r($set); exit;
+            if ($set['paytype'] == 3) {
+                $ordermoney = 0;
+                $bonusordermoney = 0;
+                $bonusmoney = 0;
+
+                $orders = pdo_fetchall('select id,openid,price,dispatchprice from ' . tablename('ewei_shop_order') . (' where uniacid=' . $_W['uniacid'] . ' and status=3 and isglobonus=0 and id=' . $orderId), array(), 'id');
+                //如果订单不存在，不分红
+                if (empty($orders)) {
+                    return null;
+                }
+                $partners = pdo_fetchall('select m.id,m.openid,m.partnerlevel,l.bonus from ' . tablename('ewei_shop_member') . ' m ' . '  left join ' . tablename('ewei_shop_globonus_level') . ' l on l.id = m.partnerlevel ' . ('  where m.uniacid=:uniacid and  m.ispartner=1 and m.partnerstatus=1 '), array(':uniacid' => $_W['uniacid']));
+                // 未设置则取全局分红
+                foreach ($partners as &$p) {
+                    if (empty($p['partnerlevel']) || $p['bonus'] == null) {
+                        $p['bonus'] = floatval($set['bonus']);
+                    }
+                }
+                unset($p);
+                //    echo "<pre>"; print_r($partners); exit;
+
+                foreach ($orders as $o) {
+                    $orderBonusMoney = $o['price'] - $o['dispatchprice'];
+                    $orderGoods = pdo_fetchall("select o.realprice,o.goodsid,o.orderid,o.total,g.costprice,g.no_globonus  from " . tablename("ewei_shop_order_goods") . " o " . " left join  " . tablename("ewei_shop_goods") . " g on o.goodsid = g.id" . " where o.uniacid=:uniacid and o.orderid=:orderid", array(":uniacid" => $_W["uniacid"], ":orderid" => $orderId));
+                    // echo "<pre>"; print_r($orderGoods); exit;
+                    foreach ($orderGoods as $key => $goods) {
+                        //商品不参与分红
+                        if ($goods['no_globonus'] == 1) {
+                            $orderBonusMoney -= $goods['realprice'];
+                        } //如果开启订单利润计算分红
+                        elseif ($set['bonusType'] == 1) {
+                            $orderBonusMoney -= $goods['costprice'] * $goods['total'];
+                        }
+                        $orderBonusMoney < 0 && $orderBonusMoney = 0;
+                    }
+                    // echo "<pre>"; print_r($orderBonusMoney); exit;
+                    $ordermoney += $o['price'];
+                    // echo "<pre>"; print_r($set); exit;
+
+                    //分红金额计算 平台累计分红
+                    // $bonusordermoney += $orderBonusMoney * $set['bonusrate'] / 100;
+
+                    // echo "<pre>"; print_r($partners); exit;
+                    $zerro = 0;
+                    $five = 0;
+                    $six = 0;
+                    $seven= 0;
+                    // 计算股东人数
+                    foreach ($partners as $p) {
+                        // 店长人数
+                        if ($p['partnerlevel'] == '0') {
+                            $zerro++;
+                        }
+                        // 经理人数
+                        if ($p['partnerlevel'] == '5') {
+                            $five++;
+                        }
+                        if ($p['partnerlevel'] == '6') {
+                            $six++;
+                        }
+                        if ($p['partnerlevel'] == '7') {
+                            $seven++;
+                        }
+                    }
+                    //  echo "<pre>";
+                    //  print_r($zerro);
+                    //  print_r($five);
+                    //  print_r($six);
+                    //  print_r($seven);
+                    //   exit;
+                    // 应该分的利润
+                    $price = $orderBonusMoney * $set['bonusrate'] / 100;
+                    foreach ($partners as  $key=>$p) {
+                        // 是否允许内购
+                        if (empty($set['selfbuy'])) {
+                            if ($p['openid'] == $o['openid']) {
+                                continue;
+                            }
+                        }
+                        !isset($p['bonusmoney']) && $p['bonusmoney'] = 0;
+                        // 店长分红
+                        if ($p['partnerlevel'] == '0') {
+                            $p['bonusmoney'] += floatval($price * $p['bonus'] /100/ (count($partners)));
+                        }
+                        // 经理分红
+                        if ($p['partnerlevel'] == '6') {
+                            $p['bonusmoney'] += floatval($price * $p['bonus'] /100/ (count($partners)-$zerro));
+                        }
+                        // 总经理分红
+                        if ($p['partnerlevel'] == '5') {
+                            $p['bonusmoney'] += floatval($price * $p['bonus'] /100/ (count($partners)-$zerro-$six-$five));
+                        }
+                        // 高级经理分红
+                        if ($p['partnerlevel'] == '7') {
+                            $p['bonusmoney'] += floatval($price * $p['bonus'] /100/ (count($partners)-$zerro-$six));
+                        }
+                        $partners[$key]['bonusmoney'] = $p['bonusmoney'];
+                    }
+                    // echo "<pre>";print_r($partners);exit;
+
+                    unset($p);
+                    unset($ewei_shop_member);
+                }
+                //    echo "<pre>"; print_r($set['levelBonus']); exit;
+
+                //增加是否开启等级比例分红
+                // $levelBonus = [];
+                // if ($set['levelBonus'] == 1) {
+                //     $partnerLevels = pdo_fetchall('select * from ' . tablename('ewei_shop_globonus_level') . (' where uniacid=:uniacid ORDER BY hierarchy desc'), array(':uniacid' => $_W['uniacid']));
+                //     // echo "<pre>"; print_r($partnerLevels); exit;
+                //     //股东等级人数
+                //     $countNum = 0;
+                //     foreach ($partnerLevels as $key => $partnerLevel) {
+                //         $num = pdo_fetchcolumn('select count(id) from' . tablename('ewei_shop_member') . (' where uniacid=' . $_W['uniacid'] . ' and ispartner = 1 and partnerstatus = 1 and partnerlevel=' . $partnerLevel['id'])) ?: 0;
+                //         $countNum += $num;
+                //         $levelBonus[$partnerLevel['id']] = [
+                //             'num'       => $num,
+                //             'bonusNum'  => $countNum,
+                //             'bonusRate' => $partnerLevel['bonus']
+                //         ];
+                //     }
+                  
+                //     $partnerCount = pdo_fetchcolumn('select count(id) from' . tablename('ewei_shop_member') . (' where uniacid=' . $_W['uniacid'] . ' and ispartner = 1 and partnerstatus = 1')) ?: 0;
+                //     // echo "<pre>"; print_r($partnerCount); exit;
+                //     $levelBonus[0] = [
+                //         'num'       => $partnerCount,
+                //         'bonusNum'  => $partnerCount,
+                //         'bonusRate' => $set['bonus']
+                //     ];
+
+                //     rsort($levelBonus);
+
+                //     $bonusMoney = 0;
+                //     foreach ($levelBonus as $key => &$bonus) {
+                //         $money = round($bonusordermoney * $bonus['bonusRate'] / 100 / $bonus['bonusNum'], 2);
+
+                //         $bonusMoney += $money;
+
+                //         //等级应分红份额
+                //         $bonus['bonusMoney'] = $bonusMoney;
+                //     }
+                //     // echo "<pre>";print_r($bonus);exit;
+                // }
+                //    echo "<pre>";print_r($levelBonus);exit;
+                // echo "<pre>";print_r($partners);exit;
+                foreach ($partners as &$p) {
+                    $bonusmoney_send = 0;
+                    $p['charge'] = 0;
+                    $p['chargemoney'] = 0;
+                    //开启等级比例分红
+                    // if ($set['levelBonus'] == 1) {
+                    //     $p['bonusmoney'] = $levelBonus[$p['partnerlevel']]['bonusMoney'];
+                    // }
+
+                    if (floatval($set['paycharge']) <= 0 || floatval($set['paybegin']) <= $p['bonusmoney'] && $p['bonusmoney'] <= floatval($set['payend'])) {
+                        $bonusmoney_send += round($p['bonusmoney'], 2);
+                    } else {
+                        $bonusmoney_send += round($p['bonusmoney'] - $p['bonusmoney'] * floatval($set['paycharge']) / 100, 2);
+                        $p['charge'] = floatval($set['paycharge']);
+                        $p['chargemoney'] = round($p['bonusmoney'] * floatval($set['paycharge']) / 100, 2);
+                    }
+
+                    $p['bonusmoney_send'] = $bonusmoney_send;
+                    // 分红总数
+                    $bonusmoney += $bonusmoney_send;
+//                    echo "<pre>";print_r($bonusmoney);
+                }
+                
+                unset($p);
+                // echo "<pre>"; print_r($partners); exit;
+                // echo "<pre>"; print_r($bonusordermoney); exit;
+
+                if ($bonusordermoney < $bonusmoney) {
+                    $rat = $bonusordermoney / $bonusmoney;
+                    $bonusmoney = 0;
+
+                    foreach ($partners as &$p) {
+                        $p['chargemoney'] = round($p['chargemoney'] * $rat, 2);
+                        $p['bonusmoney_send'] = round($p['bonusmoney_send'] * $rat, 2);
+
+                        $bonusmoney += $p['bonusmoney_send'];
+                    }
+                    unset($p);
+                }
+//                echo "<pre>";print_r($bonusmoney);
+//                echo "<pre>";print_r($levelBonus);
+//                echo "<pre>";print_r($partners);exit;
+
+
+                $data = array(
+                    'orders'          => $orders,
+                    'partners'        => $partners,
+                    'ordermoney'      => round($ordermoney, 2),
+                    'bonusordermoney' => round($bonusordermoney, 2),
+                    'bonusrate'       => round($set['bonusrate'], 2),
+                    'ordercount'      => count($orders),
+                    'bonusmoney'      => round($bonusmoney, 2),
+                    'partnercount'    => count($partners),
+                    'starttime'       => 0,
+                    'endtime'         => 0,
+                    'old'             => false
+                );
+                // echo "<pre>"; print_r($data); exit;
+                //前段修改的分红最终值，这里直接赋值
+                $bonusmoney = $data['bonusordermoney'];
+                // echo "<pre>"; print_r($data['orders']); exit;
+
+                $bill = array(
+                    'uniacid'         => $_W['uniacid'],
+                    'billno'          => m('common')->createNO('globonus_bill', 'billno', 'GB'),
+                    'paytype'         => $set['paytype'],
+                    'year'            => 0,
+                    'month'           => 0,
+                    'week'            => 0,
+                    'ordercount'      => $data['ordercount'],
+                    'ordermoney'      => $data['ordermoney'],
+                    'bonusmoney'      => $data['bonusmoney'],
+                    'bonusordermoney' => $data['bonusordermoney'],
+                    'bonusrate'       => $data['bonusrate'],
+                    'bonusmoney_send' => $bonusmoney,
+                    'bonusmoney_pay'  => $bonusmoney,
+                    'partnercount'    => $data['partnercount'],
+                    'starttime'       => $data['starttime'],
+                    'endtime'         => $data['endtime'],
+                    'createtime'      => time(),
+                    'confirmtime'     => time(),
+                    'status'          => 2
+                );
+
+                pdo_insert('ewei_shop_globonus_bill', $bill);
+                $billid = pdo_insertid();
+               
+                foreach ($data['orders'] as $order) {
+                    $bo = array(
+                        'uniacid'    => $_W['uniacid'],
+                        'billid'     => $billid,
+                        'orderid'    => $order['id'],
+                        'ordermoney' => $order['price']
+                    );
+                    pdo_insert('ewei_shop_globonus_billo', $bo);
+                    $inserID = pdo_insertid();
+                    if ($inserID) {
+                        pdo_update('ewei_shop_order', array('isglobonus' => '1'), array('id' => $order['id']));
+                    }
+                    // echo "<pre>"; print_r($order['id']); exit;
+                }
+                
+                // $rate = $bonusmoney / $data['bonusmoney'];
+
+                // echo "<pre>"; print_r($rate); exit;
+                // logg('1.json',$data['partners']);
+                foreach ($data['partners'] as $partner) {
+                    $bp = array(
+                        'uniacid'     => $_W['uniacid'],
+                        'billid'      => $billid,
+                        'payno'       => m('common')->createNO('globonus_billp', 'payno', 'GP'),
+                        'openid'      => $partner['openid'],
+                        'money'       => $partner['bonusmoney'],
+//                        'realmoney'   => $partner['bonusmoney_send'] * $rate,
+//                        'paymoney'    => $partner['bonusmoney_send'] * $rate,
+                        'realmoney'   => $partner['bonusmoney_send'],
+                        'paymoney'    => $partner['bonusmoney_send'],
+                        'bonus'       => $partner['bonus'],
+                        'charge'      => $partner['charge'],
+                        'chargemoney' => $partner['chargemoney'],
+                        'status'      => 1
+                    );
+                    pdo_insert('ewei_shop_globonus_billp', $bp);
+                }
+                plog('globonus.bonus.build', '实时创建结算单 ID:' . $billid . ' 单号: ' . $bill['billno'] . ' 分红金额: ' . $bill['bonusmoney_pay'] . ' 股东人数:  ' . $bill['partnercount']);
+
+
+                //自动结算
+                $partners = pdo_fetchall('select * from ' . tablename('ewei_shop_globonus_billp') . ' where billid=:billid and status=1 and uniacid=:uniacid', array(':uniacid' => $_W['uniacid'], ':billid' => $billid), 'id');
+                //   echo "<pre>"; print_r($billid); exit;
+                foreach ($partners as $partner) {
+                    $pay = $partner['paymoney'];
+                    $moneytype = intval($set['moneytype']);
+                    $moneytype <= 0 && ($moneytype = 0);
+
+                    if ($pay < 1) {
+                        $moneytype = 0;
+                    }
+
+                    $member = m('member')->getMember($partner['openid']);
+
+                    if (!empty($member)) {
+
+                        //会员冻结分红值 + 本次分红值
+                        $memberPartnerBonus = $member['partner_froze_amount'] + $pay;
+
+                        //股东等级
+                        $memberPartnerLevel = pdo_fetch('select *  from ' . tablename('ewei_shop_globonus_level') . ' where id=:id and uniacid=:uniacid limit 1', array(':uniacid' => $_W['uniacid'], ':id' => $member['partnerlevel']));
+                        //股东等级等级冻结金额
+                        $levelFetter = $memberPartnerLevel ? $memberPartnerLevel['froze_amount'] : ($set['froze_amount'] ?: 0);
+
+                        //应分红金额，大于0直接分红，小于0累加到会员冻结分红值
+                        $payAmount = $memberPartnerBonus - abs($levelFetter);
+                        // logg('1.json',$memberPartnerBonus);
+                        if ($payAmount > 0) {
+                            if ($moneytype == 1) {
+                                $pay = $payAmount * 100;
+                            }
+                            pdo_update('ewei_shop_member', array('partner_froze_amount' => $levelFetter), array('id' => $member['id']));
+                            $result = m('finance')->pay($partner['openid'], $moneytype, $pay, $partner['payno'], '股东分红', false);
+                        } else {
+                            pdo_update('ewei_shop_member', array('partner_froze_amount' => $memberPartnerBonus), array('id' => $member['id']));
+                            $result = true;
+                        }
+
+                        if (is_error($result)) {
+                            pdo_update('ewei_shop_globonus_billp', array('reason' => $result['message'], 'status' => -1), array('id' => $partner['id']));
+                        } else {
+                            pdo_update('ewei_shop_globonus_billp', array('reason' => '', 'status' => 1, 'paytime' => time()), array('id' => $partner['id']));
+                            $this->upgradeLevelByBonus($partner['openid']);
+                            $this->sendMessage($partner['openid'], array('money' => $partner['paymoney'], 'nickname' => $member['nickname'], 'type' => ($payAmount > 0) ? ($moneytype ? '微信钱包' : '余额') : "冻结分红"), TM_GLOBONUS_PAY);
+                        }
+                    } else {
+                        pdo_update('ewei_shop_globonus_billp', array('reason' => '未找到会员', 'status' => -1), array('id' => $partner['id']));
+                    }
+                }
+                plog('globonus.bonus.payp', '自动进行结算单结算 ID:' . $billid);
             }
-            $openid = $order["openid"];
-            $member = m("member")->getMember($openid);
-            if( empty($member) )
-            {
-                return NULL;
-            }
-            $this->orderFinishTask($order, ($set["selfbuy"] ? true : false), $member);
-            $time = time();
-            $become_check = intval($set["become_check"]);
-            $isagent = $member["isagent"] == 1 && $member["status"] == 1;
-            $parentisagent = true;
-            if( !empty($member["agentid"]) )
-            {
-                $parent = m("member")->getMember($member["agentid"]);
-                if( empty($parent) || $parent["isagent"] != 1 || $parent["status"] != 1 )
-                {
-                    $parentisagent = false;
-                }
-            }
-            if( !$isagent && $set["become_order"] == "1" )
-            {
-                if( $set["become"] == "4" && !empty($set["become_goodsid"]) )
-                {
-                    $order_goods = pdo_fetchall("select goodsid from " . tablename("ewei_shop_order_goods") . " where orderid=:orderid and uniacid=:uniacid  ", array( ":uniacid" => $_W["uniacid"], ":orderid" => $order["id"] ), "goodsid");
-                    if( in_array($set["become_goodsid"], array_keys($order_goods)) && empty($member["agentblack"]) )
-                    {
-                        pdo_update("ewei_shop_member", array( "status" => $become_check, "isagent" => 1, "agenttime" => ($become_check == 1 ? $time : 0) ), array( "uniacid" => $_W["uniacid"], "id" => $member["id"] ));
-                        if( $become_check == 1 )
-                        {
-                            $this->sendMessage($openid, array( "nickname" => $member["nickname"], "agenttime" => $time ), TM_COMMISSION_BECOME);
-                            if( $parentisagent )
-                            {
-                                $this->upgradeLevelByAgent($parent["id"]);
-                                if( p("globonus") )
-                                {
-                                    p("globonus")->upgradeLevelByAgent($parent["id"]);
-                                }
-                                if( p("abonus") )
-                                {
-                                    p("abonus")->upgradeLevelByAgent($parent["id"]);
-                                }
-                                if( p("author") )
-                                {
-                                    p("author")->upgradeLevelByAgent($parent["id"]);
-                                }
-                            }
-                        }
-                    }
-                }
-                else
-                {
-                    if( $set["become"] == 2 || $set["become"] == 3 )
-                    {
-                        $can = false;
-                        if( $set["become"] == "2" )
-                        {
-                            $ordercount = pdo_fetchcolumn("select count(*) from " . tablename("ewei_shop_order") . " where openid=:openid and status>=3 and uniacid=:uniacid limit 1", array( ":uniacid" => $_W["uniacid"], ":openid" => $openid ));
-                            $can = intval($set["become_ordercount"]) <= $ordercount;
-                        }
-                        else
-                        {
-                            if( $set["become"] == "3" )
-                            {
-                                $moneycount = pdo_fetchcolumn("select sum(goodsprice) from " . tablename("ewei_shop_order") . " where openid=:openid and status>=3 and uniacid=:uniacid limit 1", array( ":uniacid" => $_W["uniacid"], ":openid" => $openid ));
-                                $can = floatval($set["become_moneycount"]) <= $moneycount;
-                            }
-                        }
-                        if( $can && empty($member["agentblack"]) )
-                        {
-                            pdo_update("ewei_shop_member", array( "status" => $become_check, "isagent" => 1, "agenttime" => $time ), array( "uniacid" => $_W["uniacid"], "id" => $member["id"] ));
-                            if( $become_check == 1 )
-                            {
-                                $this->sendMessage($member["openid"], array( "nickname" => $member["nickname"], "agenttime" => $time ), TM_COMMISSION_BECOME);
-                            }
-                        }
-                    }
-                }
-            }
-            if( !empty($member["agentid"]) )
-            {
-                $parent = m("member")->getMember($member["agentid"]);
-                if( !empty($parent) && $parent["isagent"] == 1 && $parent["status"] == 1 )
-                {
-                    $order_goods = pdo_fetchall("select g.id,g.title,og.total,og.realprice,og.price,og.optionname as optiontitle,g.noticeopenid,g.noticetype,og.commission1,og.commissions from " . tablename("ewei_shop_order_goods") . " og " . " left join " . tablename("ewei_shop_goods") . " g on g.id=og.goodsid " . " where og.uniacid=:uniacid and og.orderid=:orderid ", array( ":uniacid" => $_W["uniacid"], ":orderid" => $order["id"] ));
-                    $goods = "";
-                    $commission_total1 = 0;
-                    $commission_total2 = 0;
-                    $commission_total3 = 0;
-                    $pricetotal = 0;
-                    foreach( $order_goods as $og )
-                    {
-                        $goods .= "" . $og["title"] . "( ";
-                        if( !empty($og["optiontitle"]) )
-                        {
-                            $goods .= " 规格: " . $og["optiontitle"];
-                        }
-                        $goods .= " 单价: " . $og["realprice"] / $og["total"] . " 数量: " . $og["total"] . " 总价: " . $og["realprice"] . "); ";
-                        $commissions = iunserializer($og["commissions"]);
-                        $commission_total1 += (isset($commissions["level1"]) ? floatval($commissions["level1"]) : 0);
-                        $commission_total2 += (isset($commissions["level2"]) ? floatval($commissions["level2"]) : 0);
-                        $commission_total3 += (isset($commissions["level3"]) ? floatval($commissions["level3"]) : 0);
-                        $pricetotal += $og["realprice"];
-                    }
-                    if( $order["agentid"] == $member["id"] )
-                    {
-                        $this->sendMessage($member["openid"], array( "nickname" => $member["nickname"], "ordersn" => $order["ordersn"], "orderopenid" => $order["openid"], "price" => $pricetotal, "goods" => $goods, "commission1" => $commission_total1, "commission2" => $commission_total2, "commission3" => $commission_total3, "finishtime" => $order["finishtime"] ), TM_COMMISSION_ORDER_FINISH);
-                    }
-                    else
-                    {
-                        if( $order["agentid"] == $parent["id"] )
-                        {
-                            $this->sendMessage($parent["openid"], array( "nickname" => $member["nickname"], "ordersn" => $order["ordersn"], "orderopenid" => $order["openid"], "price" => $pricetotal, "goods" => $goods, "commission1" => $commission_total1, "commission2" => $commission_total2, "commission3" => $commission_total3, "finishtime" => $order["finishtime"] ), TM_COMMISSION_ORDER_FINISH);
-                        }
-                    }
-                }
-            }
-            $this->upgradeLevelByOrder($openid);
-            if( $isagent )
-            {
-                $plugin_author = p("author");
-                if( $plugin_author )
-                {
-                    $set = $plugin_author->getSet();
-                    if( !empty($set["open"]) )
-                    {
-                        $isauthor = $member["isauthor"] && $member["authorstatus"];
-                        if( $isauthor )
-                        {
-                            $plugin_author->upgradeLevelByOrder($openid);
-                        }
-                        else
-                        {
-                            $become_check = intval($set["become_check"]);
-                            if( $set["become_order"] == "1" )
-                            {
-                                $info = $this->getInfo($member["id"], array( "ordercount3", "ordermoney3", "order13money", "order13" ));
-                                $can = false;
-                                if( $set["become"] == "3" )
-                                {
-                                    $can = floatval($set["become_moneycount"]) <= floatval($info["ordermoney3"]);
-                                }
-                                else
-                                {
-                                    if( $set["become"] == "4" )
-                                    {
-                                        $moneycount = pdo_fetchcolumn("select sum(goodsprice) from " . tablename("ewei_shop_order") . " where openid=:openid and status>=3 and uniacid=:uniacid limit 1", array( ":uniacid" => $_W["uniacid"], ":openid" => $openid ));
-                                        $can = floatval($set["become_selfmoneycount"]) <= floatval($moneycount);
-                                    }
-                                }
-                                if( $can && empty($member["authorblack"]) )
-                                {
-                                    pdo_update("ewei_shop_member", array( "authorstatus" => $become_check, "isauthor" => 1, "authortime" => $time ), array( "uniacid" => $_W["uniacid"], "id" => $member["id"] ));
-                                    if( $become_check == 1 )
-                                    {
-                                        $plugin_author->sendMessage($member["openid"], array( "nickname" => $member["nickname"], "authortime" => $time ), TM_AUTHOR_BECOME);
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-                $plugin_globonus = p("globonus");
-                if( !$plugin_globonus )
-                {
-                    return NULL;
-                }
-                $set = $plugin_globonus->getSet();
-                if( empty($set["open"]) )
-                {
-                    return NULL;
-                }
-                $ispartner = $member["ispartner"] && $member["partnerstatus"];
-                if( $ispartner )
-                {
-                    $plugin_globonus->upgradeLevelByOrder($openid);
-                    return NULL;
-                }
-                $become_check = intval($set["become_check"]);
-                if( $set["become_order"] == "1" )
-                {
-                    if( $set["become"] == "4" && !empty($set["become_goodsid"]) )
-                    {
-                        $order_goods = pdo_fetchall("select goodsid from " . tablename("ewei_shop_order_goods") . " where orderid=:orderid and uniacid=:uniacid  ", array( ":uniacid" => $_W["uniacid"], ":orderid" => $order["id"] ), "goodsid");
-                        if( in_array($set["become_goodsid"], array_keys($order_goods)) && empty($member["partnerblack"]) )
-                        {
-                            pdo_update("ewei_shop_member", array( "partnerstatus" => $become_check, "ispartner" => 1, "partnertime" => ($become_check == 1 ? $time : 0) ), array( "uniacid" => $_W["uniacid"], "id" => $member["id"] ));
-                            if( $become_check == 1 )
-                            {
-                                $plugin_globonus->sendMessage($openid, array( "nickname" => $member["nickname"], "partnertime" => $time ), TM_GLOBONUS_BECOME);
-                            }
-                        }
-                    }
-                    else
-                    {
-                        if( $set["become"] == 2 || $set["become"] == 3 )
-                        {
-                            $can = false;
-                            if( $set["become"] == "2" )
-                            {
-                                $ordercount = pdo_fetchcolumn("select count(*) from " . tablename("ewei_shop_order") . " where openid=:openid and status>=3 and uniacid=:uniacid limit 1", array( ":uniacid" => $_W["uniacid"], ":openid" => $openid ));
-                                $can = intval($set["become_ordercount"]) <= $ordercount;
-                            }
-                            else
-                            {
-                                if( $set["become"] == "3" )
-                                {
-                                    $moneycount = pdo_fetchcolumn("select sum(goodsprice) from " . tablename("ewei_shop_order") . " where openid=:openid and status>=3 and uniacid=:uniacid limit 1", array( ":uniacid" => $_W["uniacid"], ":openid" => $openid ));
-                                    $can = floatval($set["become_moneycount"]) <= $moneycount;
-                                }
-                            }
-                            if( $can && empty($member["partnerblack"]) )
-                            {
-                                pdo_update("ewei_shop_member", array( "partnerstatus" => $become_check, "ispartner" => 1, "partnertime" => $time ), array( "uniacid" => $_W["uniacid"], "id" => $member["id"] ));
-                                if( $become_check == 1 )
-                                {
-                                    $plugin_globonus->sendMessage($member["openid"], array( "nickname" => $member["nickname"], "partnertime" => $time ), TM_GLOBONUS_BECOME);
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }  
+            return true;
+        }
+
+
+        
         public function orderFinishTask($order, $self_buy = false, $member)
         {
             global $_W;
