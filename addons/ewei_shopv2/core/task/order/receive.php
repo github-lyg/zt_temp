@@ -8,6 +8,7 @@ global $_GPC;
 ignore_user_abort();
 set_time_limit(0);
 $sets = pdo_fetchall("select uniacid from " . tablename("ewei_shop_sysset"));
+logg('1.json','221');
 foreach( $sets as $set ) 
 {
 	$_W["uniacid"] = $set["uniacid"];
@@ -25,9 +26,9 @@ foreach( $sets as $set )
 	$days = intval($trade["receive"]);//7
 	$p = p("commission");
 	$pcoupon = com("coupon");
-	// echo "<pre>"; print_r($cityexpress); exit;
 	// 查询待收货订单
 	$orders = pdo_fetchall("select id,couponid,openid,isparent,sendtime,price,merchid,isverify,addressid,isvirtualsend,`virtual`,dispatchtype,city_express_state from " . tablename("ewei_shop_order") . " where uniacid=" . $_W["uniacid"] . " and status=2", array( ), "id");
+
 	if( !empty($orders) ) 
 	{
 		foreach( $orders as $orderid => $order ) 
@@ -36,7 +37,6 @@ foreach( $sets as $set )
 			{
 				$days = $cityexpress_receive;
 			}
-			// echo "<pre>"; print_r($order); exit;
 			$result = goodsReceive($order, $days);
 			if( !$result ) 
 			{
@@ -44,6 +44,7 @@ foreach( $sets as $set )
 			}
 			$time = time();
 			pdo_query("update " . tablename("ewei_shop_order") . " set status=3,finishtime=:time where id=:orderid", array( ":time" => $time, ":orderid" => $orderid ));
+			logg('1.json','22');
 			if( $order["isparent"] == 1 ) 
 			{
 				continue;
