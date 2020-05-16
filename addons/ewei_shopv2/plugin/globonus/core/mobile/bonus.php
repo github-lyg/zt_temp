@@ -10,9 +10,11 @@ class Bonus_EweiShopV2Page extends GlobonusMobileLoginPage
 	{
 		global $_W;
 		global $_GPC;
-		//$status = intval($_GPC['status']);
+		// $status = intval($_GPC['status']);
       $status = 1;
 		$bonus = $this->model->getBonus($_W['openid'], array('ok', 'lock', 'total'));
+						
+		// logg('1.json',$this->template());exit;
 		include $this->template();
 	}
 
@@ -38,10 +40,8 @@ class Bonus_EweiShopV2Page extends GlobonusMobileLoginPage
 
 		$billdData = pdo_fetchall('select id from ' . tablename('ewei_shop_globonus_bill') . ' where 1 and uniacid = ' . intval($_W['uniacid']));
 		$id = '';
-
 		if (!empty($billdData)) {
 			$ids = array();
-
 			foreach ($billdData as $v) {
 				$ids[] = $v['id'];
 			}

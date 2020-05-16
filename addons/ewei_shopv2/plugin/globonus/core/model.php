@@ -379,9 +379,10 @@ if (!class_exists('GlobonusModel')) {
             $ret = array();
 
             if (in_array('ok', $params)) {
-                $ret['ok'] = pdo_fetchcolumn('select ifnull(sum(paymoney),0) from ' . tablename('ewei_shop_globonus_billp') . ' where openid=:openid and status=1 and uniacid=:uniacid limit 1', array(':uniacid' => $_W['uniacid'], ':openid' => $openid));
+                // $ret['ok'] = pdo_fetchcolumn('select ifnull(sum(paymoney),0) from ' . tablename('ewei_shop_globonus_billp') . ' where openid=:openid and status=1 and uniacid=:uniacid limit 1', array(':uniacid' => $_W['uniacid'], ':openid' => $openid));
+                // 修改成money字段
+                $ret['ok'] = pdo_fetchcolumn('select ifnull(sum(money),0) from ' . tablename('ewei_shop_globonus_billp') . ' where openid=:openid and status=1 and uniacid=:uniacid limit 1', array(':uniacid' => $_W['uniacid'], ':openid' => $openid));
             }
-
             if (in_array('lock', $params)) {
                 $billdData = pdo_fetchall('select id from ' . tablename('ewei_shop_globonus_bill') . ' where 1 and uniacid = ' . intval($_W['uniacid']));
                 $id = '';
@@ -394,11 +395,12 @@ if (!class_exists('GlobonusModel')) {
                     }
 
                     $id = implode(',', $ids);
-                    $ret['lock'] = pdo_fetchcolumn('select ifnull(sum(paymoney),0) from ' . tablename('ewei_shop_globonus_billp') . ' where openid=:openid and status<>1 and uniacid=:uniacid  and billid in(' . $id . ') limit 1', array(':uniacid' => $_W['uniacid'], ':openid' => $openid));
+                    $ret['lock'] = pdo_fetchcolumn('select ifnull(sum(money),0) from ' . tablename('ewei_shop_globonus_billp') . ' where openid=:openid and status<>1 and uniacid=:uniacid  and billid in(' . $id . ') limit 1', array(':uniacid' => $_W['uniacid'], ':openid' => $openid));
                 }
             }
 
             $ret['total'] = $ret['ok'] + $ret['lock'];
+
             return $ret;
         }
 

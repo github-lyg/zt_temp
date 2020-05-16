@@ -60,7 +60,7 @@
                 </div>
             </div>
             <div class="row-remark">
-                <p>+<%log.money%></p>
+                <p>+<%log.paymoney%></p>
                 <p><%log.statusstr%></p>
             </div>
         </a>
